@@ -93,7 +93,7 @@ export default function Logo({ size = 34, animated = false, tagline = false }) {
         <p className="font-display font-bold tracking-tight leading-none" style={{ fontSize: size * 0.5 }}>
           {APP_NAME}
         </p>
-        {tagline && <p className="eyebrow mt-1.5">NIT Silchar</p>}
+        {tagline && <p className="eyebrow mt-1.5">Master the basics. Build the future of AI.</p>}
       </div>
     </div>
   );

@@ -69,7 +69,8 @@ export const createMilestone = (data) =>
 export const deleteMilestone = async (mid) => {
   await remove(ref(db, `milestones/${mid}`));
   await remove(ref(db, `progress/${mid}`));
-  await remove(ref(db, `achievements/${mid}`));
+  // No `achievements` path exists — it has no rule, so removing it was rejected
+  // by "$other" and threw after the milestone was already gone.
 };
 
 /* ------------------------------------- tasks -------------------------------- */
@@ -244,6 +245,43 @@ export async function seedIfEmpty() {
       tasks,
       materials
     }
+  });
+  return true;
+}
+
+/**
+ * Seed one milestone if it is not already there.
+ *
+ * Unlike seedIfEmpty, this keys on the milestone's own id rather than the global
+ * /seeded flag — so a second milestone can be added to an already-seeded
+ * database without touching the first, and without re-writing itself once an
+ * admin has edited it. Existence is checked, so it is safe to call on every
+ * admin sign-in. Admin-only by the rules (/milestones is admin-write), which is
+ * why App only calls it for an admin.
+ */
+export async function seedMilestoneIfMissing(milestone, tasksList = [], materialsList = []) {
+  const snap = await get(ref(db, `milestones/${milestone.id}`));
+  if (snap.exists()) return false;
+
+  const tasks = {};
+  tasksList.forEach((t, i) => {
+    // Everything starts shut. The admin opens the syllabus at the pace they want.
+    tasks[`t${String(i + 1).padStart(2, '0')}`] = { ...t, locked: true };
+  });
+
+  const materials = {};
+  materialsList.forEach((m, i) => (materials[`m${String(i + 1).padStart(2, '0')}`] = m));
+
+  const start = new Date();
+  const end = new Date(); end.setDate(end.getDate() + (milestone.durationWeeks || 8) * 7);
+
+  await set(ref(db, `milestones/${milestone.id}`), {
+    ...milestone,
+    startDate: start.toLocaleDateString('en-CA'),
+    endDate: end.toLocaleDateString('en-CA'),
+    createdAt: Date.now(),
+    tasks,
+    materials
   });
   return true;
 }

@@ -255,3 +255,159 @@ export const RAG_MATERIALS = [
   { title: 'Full Stack Retrieval', url: 'https://community.fullstackretrieval.com/', type: 'reference', note: 'Chunking strategies, catalogued.' },
   { title: 'NIT Silchar placement prep — add your own links here', url: 'https://www.nits.ac.in/', type: 'reference', note: 'Admin: replace with the circle’s own resources.' }
 ];
+
+// ---------------------------------------------------------------------------
+// MILESTONE: Claude AI Mastery in 8 weeks
+// Twelve steps, very basic to expert, across Claude's product surface:
+// prompting, tool use, agents, MCP, Claude Code, Skills, Cowork, and the
+// Agent SDK.
+//
+// Video-first: seven steps are free-to-audit video courses, most of them built
+// by Anthropic with DeepLearning.AI (Elie Schoppik / Colt Steele) plus two of
+// Andrew Ng's. Auditing gives full access to the video lectures and sandboxes.
+// The remaining steps are hands-on checkpoints, and Cowork (no free video
+// course exists yet) is a guided hands-on step. `dots` are always out of 10.
+// URLs verified live July 2026; DeepLearning.AI occasionally moves paths, so
+// admin should confirm each from Admin → Courses.
+// ---------------------------------------------------------------------------
+
+export const CLAUDE_MILESTONE = {
+  // New id on purpose: the first cut seeded under 'claude-ai-expert', and
+  // seedMilestoneIfMissing won't overwrite an existing milestone. A fresh id
+  // lands the redesigned video-based syllabus cleanly. Delete the old
+  // 'claude-ai-expert' milestone from Admin → Milestone once this is live.
+  id: 'claude-ai-mastery',
+  title: 'Claude AI Mastery',
+  subtitle: 'From first prompt to shipping your own Claude agent',
+  description:
+    'Eight weeks, twelve steps, very basic to expert. Start from what a large language model is and how to work with Claude, then build through prompting, tool use, agents, MCP, Claude Code, Skills, Cowork, and the Agent SDK — and finish by shipping a Claude-powered agent or skill you can demo in an interview. Most steps are free-to-audit video courses, several built by Anthropic with DeepLearning.AI.',
+  reward: 'First to fill all dots takes the Claude Expert badge, a pinned spot on the board, and demos their capstone to the circle.',
+  durationWeeks: 8,
+  startDate: '', // set by admin
+  endDate: '',
+  active: true,
+  createdAt: 0
+};
+
+export const CLAUDE_TASKS = [
+  // ---- Week 1 — Foundations (very basic) -------------------------------------
+  {
+    order: 1, week: 1, stage: 'Foundations',
+    title: 'Generative AI for Everyone',
+    provider: 'DeepLearning.AI · Andrew Ng',
+    url: 'https://www.deeplearning.ai/courses/generative-ai-for-everyone/',
+    hours: 5, type: 'course',
+    outcome: 'The ground floor: what an LLM actually is and is not. No code. Free to audit — full video lectures.'
+  },
+  {
+    order: 2, week: 1, stage: 'Foundations',
+    title: 'AI Fluency: Framework and Foundations',
+    provider: 'Anthropic',
+    url: 'https://www.anthropic.com/learn/claude-for-you',
+    hours: 4, type: 'course',
+    outcome: 'Work with Claude deliberately — delegation, description, discernment — instead of poking at a chat box. Anthropic’s own free course.'
+  },
+
+  // ---- Week 2 — Prompting & the Claude API -----------------------------------
+  {
+    order: 3, week: 2, stage: 'Building with Claude',
+    title: 'Building toward Computer Use with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic (Colt Steele)',
+    url: 'https://www.deeplearning.ai/courses/building-toward-computer-use-with-anthropic/',
+    hours: 4, type: 'course',
+    outcome: 'The Claude API hands-on: multimodal prompts, prompt caching, tool use, and Claude driving a computer interface. The core builder’s course. Free to audit.'
+  },
+  {
+    order: 4, week: 2, stage: 'Building with Claude',
+    title: 'Checkpoint: a prompt + tool-use mini project',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 5, type: 'project',
+    outcome: 'Build one small thing on the Claude API that uses a tool call and a structured prompt. Push it to GitHub with a README. Dots = your own honest completion.'
+  },
+
+  // ---- Week 3 — How agents work ----------------------------------------------
+  {
+    order: 5, week: 3, stage: 'Agents',
+    title: 'Agentic AI',
+    provider: 'DeepLearning.AI · Andrew Ng',
+    url: 'https://www.deeplearning.ai/courses/agentic-ai/',
+    hours: 6, type: 'course',
+    outcome: 'The mental model for everything that follows: planning, tool use, reflection, and multi-step workflows. Free to audit.'
+  },
+
+  // ---- Week 4 — MCP ----------------------------------------------------------
+  {
+    order: 6, week: 4, stage: 'MCP',
+    title: 'MCP: Build Rich-Context AI Apps with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic (Elie Schoppik)',
+    url: 'https://www.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic',
+    hours: 3, type: 'course',
+    outcome: 'The Model Context Protocol end to end: build an MCP server and client, connect to reference servers, and deploy a remote one. This is how Claude reaches tools and data. Free to audit.'
+  },
+
+  // ---- Week 5 — Claude Code ---------------------------------------------------
+  {
+    order: 7, week: 5, stage: 'Claude Code',
+    title: 'Claude Code: A Highly Agentic Coding Assistant',
+    provider: 'DeepLearning.AI · Anthropic (Elie Schoppik)',
+    url: 'https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant',
+    hours: 4, type: 'course',
+    outcome: 'Agentic coding for real: subagents working in parallel, MCP servers (Playwright, Figma), autonomous pull requests, and turning a notebook into a dashboard. Free to audit.'
+  },
+  {
+    order: 8, week: 5, stage: 'Claude Code',
+    title: 'Checkpoint: drive Claude Code through a real repo',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 6, type: 'project',
+    outcome: 'Point Claude Code at a project you care about, add a CLAUDE.md, and land a real change — a feature or a bug fix — as a pull request. Commit the transcript notes.'
+  },
+
+  // ---- Week 6 — Skills -------------------------------------------------------
+  {
+    order: 9, week: 6, stage: 'Skills',
+    title: 'Agent Skills with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic (Elie Schoppik)',
+    url: 'https://www.deeplearning.ai/courses/agent-skills-with-anthropic',
+    hours: 3, type: 'course',
+    outcome: 'SKILL.md, progressive disclosure, and skills in action across Claude.ai, Claude Code, the API and the Agent SDK, combined with MCP and subagents. Free to audit.'
+  },
+  {
+    order: 10, week: 6, stage: 'Skills',
+    title: 'Checkpoint: build and package a custom Skill',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 5, type: 'project',
+    outcome: 'A skill that does one thing well, with a description that triggers reliably. Test it in Claude.ai and Claude Code. This is the first thing you can hand to someone else.'
+  },
+
+  // ---- Week 7 — Cowork & the Agent SDK (expert) ------------------------------
+  {
+    order: 11, week: 7, stage: 'Cowork & Agent SDK',
+    title: 'Claude Cowork: automate files and tasks (hands-on)',
+    provider: 'Anthropic docs · self-directed',
+    url: 'https://docs.claude.com/',
+    hours: 4, type: 'project',
+    outcome: 'No free video course exists yet, so this is hands-on: use Cowork to automate a real file/task workflow, and see how plugins bundle skills, tools and MCPs. Admin: link the current Cowork docs page here.'
+  },
+  {
+    order: 12, week: 8, stage: 'Capstone',
+    title: 'Capstone: build a custom agent on the Agent SDK + case study',
+    provider: 'Self-directed · Anthropic Agent SDK docs',
+    url: 'https://docs.claude.com/',
+    hours: 12, type: 'project',
+    outcome:
+      'Stand up your own agent on the Claude Agent SDK — the foundation under Claude Code and Cowork — wiring in a tool or MCP server and a skill. Public repo plus a one-page case study: what it does, how it is built, what broke, how you fixed it. Demo it to the circle. This is the artifact that gets you hired. Admin: link the current Agent SDK docs here.'
+  }
+];
+
+export const CLAUDE_MATERIALS = [
+  { title: 'Anthropic Academy — free Claude courses', url: 'https://anthropic.skilljar.com/', type: 'reference', note: 'Anthropic’s own free course catalogue. Fluency, product, and developer tracks.' },
+  { title: 'Anthropic learning hub', url: 'https://www.anthropic.com/learn', type: 'reference', note: 'The map of official guides and courses, including AI Fluency.' },
+  { title: 'Claude documentation', url: 'https://docs.claude.com/', type: 'reference', note: 'The primary reference. Admin: link specific pages from each step here.' },
+  { title: 'Prompt engineering interactive tutorial', url: 'https://github.com/anthropics/courses', type: 'reference', note: 'Anthropic’s hands-on prompting tutorial. Do it alongside Week 2.' },
+  { title: 'Anthropic Cookbook', url: 'https://github.com/anthropics/anthropic-cookbook', type: 'reference', note: 'Runnable code examples. Skim early, return per topic.' },
+  { title: 'Model Context Protocol (MCP)', url: 'https://modelcontextprotocol.io/', type: 'reference', note: 'The open protocol behind tools and connectors. Reference for Week 4.' },
+  { title: 'Vector Circle — add the circle’s own Claude links here', url: 'https://docs.claude.com/', type: 'reference', note: 'Admin: replace with resources the circle finds useful.' }
+];

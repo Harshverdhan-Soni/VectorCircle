@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { listen, objToArr, seedIfEmpty, rank, rosterOf } from './lib/store';
+import { listen, objToArr, seedIfEmpty, seedMilestoneIfMissing, rank, rosterOf } from './lib/store';
 import { watchAuth, signOut as authSignOut } from './lib/auth';
-import { APP_NAME, APP_TAGLINE } from './data/seed';
+import { APP_NAME, APP_TAGLINE, CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS } from './data/seed';
 import { Mark } from './components/Logo';
 import ThemeToggle from './components/ThemeToggle';
 import ChangePin from './components/ChangePin';
@@ -65,8 +65,14 @@ export default function App() {
     setAuthReady(true);
   }), []);
 
-  // Only an admin can write the seed, so it waits for one to sign in.
-  useEffect(() => { if (me?.role === 'admin') seedIfEmpty().catch(() => {}); }, [me]);
+  // Only an admin can write the seed, so it waits for one to sign in. The
+  // second milestone is seeded separately — keyed on its own id, not /seeded —
+  // so it lands even though the RAG seed already ran once.
+  useEffect(() => {
+    if (me?.role !== 'admin') return;
+    seedIfEmpty().catch(() => {});
+    seedMilestoneIfMissing(CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS).catch(() => {});
+  }, [me]);
 
   // Readable only by this uid or an admin, so it never advertises which
   // accounts are still sitting on the default PIN.
