@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<defs><linearGradient id="g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#58C1D8"/><stop offset="1" stop-color="#7ED9A5"/></linearGradient><radialGradient id="c"><stop offset="0" stop-color="#7ED9A5"/><stop offset="1" stop-color="#58C1D8"/></radialGradient></defs>
+<rect width="64" height="64" rx="15" fill="#131A24"/>
+<circle cx="32" cy="32" r="27" stroke="#E8EEF6" stroke-opacity=".22" stroke-width="1"/>
+<line x1="32.00" y1="5.00" x2="32.00" y2="20.04" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="1"/>
+<circle cx="32.00" cy="5.00" r="2.4" fill="url(#g)"/>
+<line x1="43.71" y1="7.67" x2="39.41" y2="16.61" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="43.71" cy="7.67" r="2.4" fill="url(#g)"/>
+<line x1="53.11" y1="15.17" x2="43.35" y2="22.95" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="53.11" cy="15.17" r="2.4" fill="url(#g)"/>
+<line x1="58.32" y1="25.99" x2="42.72" y2="29.55" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="1"/>
+<circle cx="58.32" cy="25.99" r="2.4" fill="url(#g)"/>
+<line x1="58.32" y1="38.01" x2="49.74" y2="36.05" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="58.32" cy="38.01" r="2.4" fill="url(#g)"/>
+<line x1="53.11" y1="48.83" x2="42.35" y2="40.26" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="53.11" cy="48.83" r="2.4" fill="url(#g)"/>
+<line x1="43.71" y1="56.33" x2="38.86" y2="46.24" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="43.71" cy="56.33" r="2.4" fill="url(#g)"/>
+<line x1="32.00" y1="59.00" x2="32.00" y2="43.32" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="1"/>
+<circle cx="32.00" cy="59.00" r="2.4" fill="url(#g)"/>
+<line x1="20.29" y1="56.33" x2="24.45" y2="47.68" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="20.29" cy="56.33" r="2.4" fill="url(#g)"/>
+<line x1="10.89" y1="48.83" x2="21.15" y2="40.65" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="10.89" cy="48.83" r="2.4" fill="url(#g)"/>
+<line x1="5.68" y1="38.01" x2="17.22" y2="35.37" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="5.68" cy="38.01" r="2.4" fill="url(#g)"/>
+<line x1="5.68" y1="25.99" x2="19.72" y2="29.20" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="5.68" cy="25.99" r="2.4" fill="url(#g)"/>
+<line x1="10.89" y1="15.17" x2="19.15" y2="21.75" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="10.89" cy="15.17" r="2.4" fill="url(#g)"/>
+<line x1="20.29" y1="7.67" x2="23.76" y2="14.88" stroke="url(#g)" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.6"/>
+<circle cx="20.29" cy="7.67" r="2.4" fill="url(#g)"/>
+<circle cx="32" cy="32" r="11" fill="#E8EEF6" fill-opacity=".08" stroke="url(#g)" stroke-width="1.2" stroke-opacity=".55"/>
+<circle cx="32" cy="32" r="5" fill="url(#c)"/>
+</svg>

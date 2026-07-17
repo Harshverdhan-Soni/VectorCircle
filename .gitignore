@@ -1,0 +1,31 @@
+# Secrets and local config — never commit
+.env
+.env.*
+!.env.example
+functions/.env
+
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Build output
+dist/
+build/
+
+# Firebase local state
+.firebase/
+firebase-debug.log
+firestore-debug.log
+database-debug.log
+ui-debug.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+npm-debug.log*

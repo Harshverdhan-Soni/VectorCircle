@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Palette matched to the Bhanzu student app: sky-blue page, white cards,
+   blue for structure, orange reserved for the single primary action on a
+   screen. Pill buttons, generous radii.
+
+   One deliberate departure: Bhanzu's orange (#F15A29) carries white text at
+   3.37:1, which fails WCAG AA. Ours is #CC4A17 — same colour family, reads
+   the same at a glance, but 4.61:1. Students read these buttons on phones in
+   sunlight.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --ink:     233 241 253;   /* sky                          */
+  --panel:   255 255 255;   /* white card                   */
+  --panel2:  222 233 252;   /* tinted panel / info box      */
+  --field:   255 255 255;
+  --line:    203 219 245;
+  --mist:     90 107 133;   /*  4.76:1 on sky  */
+  --chalk:    27  42  68;   /* 12.64:1 */
+  --beam:     21  82 201;   /*  5.99:1 */
+  --flame:   204  74  23;   /*  4.55:1 — white label at 4.61:1 */
+  --onflame: 255 255 255;
+  --mint:     18 122  78;   /*  4.71:1 */
+  --amber:   138  83   0;   /*  5.57:1 */
+  --rose:    179  40  60;   /*  5.62:1 */
+
+  /* The mark keeps its own colours — it is not part of the UI palette.
+     Deep teal/sage here so it holds up on white cards. */
+  --grad-a: #0A6070;
+  --grad-b: #15633E;
+  --aura-1: rgba(21, 82, 201, .07);
+  --aura-2: rgba(204, 74, 23, .05);
+  --shadow-lift: 0 8px 26px -18px rgba(21, 45, 90, .40);
+  --shadow-pop:  0 10px 28px -12px rgba(21, 45, 90, .18);
+  --shadow-beam: 0 6px 18px -8px rgba(204, 74, 23, .45);
+  color-scheme: light;
+}
+
+.dark {
+  --ink:      16  26  44;   /* night sky                    */
+  --panel:    23  35  59;
+  --panel2:   31  45  73;
+  --field:    16  26  44;
+  --line:     44  60  92;
+  --mist:    148 166 196;   /*  7.06:1 */
+  --chalk:   233 240 251;   /* 15.19:1 */
+  --beam:    107 165 255;   /*  7.01:1 */
+  --flame:   255 122  69;   /*  6.73:1 */
+  --onflame:  16  26  44;   /* night text on a bright orange */
+  --mint:     74 222 128;   /*  9.99:1 */
+  --amber:   245 181  74;   /*  9.61:1 */
+  --rose:    255 138 150;   /*  7.73:1 */
+
+  --grad-a: #58C1D8;
+  --grad-b: #7ED9A5;
+  --aura-1: rgba(107, 165, 255, .10);
+  --aura-2: rgba(255, 122, 69, .06);
+  --shadow-lift: 0 12px 32px -16px rgba(0, 0, 0, .6);
+  --shadow-pop:  0 12px 30px -14px rgba(0, 0, 0, .5);
+  --shadow-beam: 0 6px 20px -8px rgba(255, 122, 69, .40);
+  color-scheme: dark;
+}
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-ink text-chalk font-body antialiased;
+    background-image:
+      radial-gradient(52rem 34rem at 78% -12%, var(--aura-1), transparent 62%),
+      radial-gradient(38rem 28rem at -8% 108%, var(--aura-2), transparent 62%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+    transition: background-color .25s ease;
+  }
+  h1, h2, h3 { @apply font-display font-semibold; letter-spacing: -0.01em; }
+  p { text-wrap: pretty; }
+  :focus-visible { @apply outline-none ring-2 ring-beam ring-offset-2 ring-offset-ink rounded-full; }
+  ::selection { @apply bg-beam/20 text-chalk; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { @apply bg-line rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-mist/50; }
+}
+
+@layer components {
+  .card { @apply bg-panel border border-line rounded-4xl shadow-pop; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           text-sm font-semibold transition active:scale-[.98]
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+  /* Orange is the one primary action per screen — never a second one. */
+  .btn-primary { @apply btn bg-flame text-onflame hover:brightness-[1.08] shadow-beam; }
+  /* Bhanzu's secondary: white pill, blue hairline, blue label. */
+  .btn-ghost   { @apply btn bg-panel border border-beam/45 text-beam hover:bg-beam/[.06] hover:border-beam; }
+  .btn-danger  { @apply btn bg-panel border border-rose/40 text-rose hover:bg-rose/[.07]; }
+
+  .field {
+    @apply w-full bg-field border border-line rounded-2xl px-4 py-2.5 text-sm text-chalk
+           placeholder:text-mist/70 focus:border-beam transition;
+  }
+  select.field {
+    @apply appearance-none pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right .85rem center; background-size: .8rem;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--cal-invert, 0)); cursor: pointer; }
+  .dark { --cal-invert: 1; }
+
+  /* Poppins has no small-caps character to spare — tightened tracking and
+     dropped to the mono face keeps these labels legible at 11px. */
+  .eyebrow { @apply font-mono text-[11px] uppercase tracking-[0.12em] text-mist; }
+  .chip { @apply font-mono text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}

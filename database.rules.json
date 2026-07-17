@@ -1,0 +1,90 @@
+{
+  "rules": {
+    "members": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true",
+      "$uid": {
+        ".validate": "newData.hasChildren(['name', 'role'])",
+        "name":   { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "role":   { ".validate": "newData.val() === 'member' || newData.val() === 'admin'" },
+        "branch": { ".validate": "newData.isString() && newData.val().length <= 60" },
+        "joinedAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+
+    "pins": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
+
+    "_loginGate": { ".read": false, ".write": false },
+
+    "mustChange": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.admin === true)",
+        ".write": "auth != null && auth.token.admin === true",
+        ".validate": "newData.isBoolean()"
+      }
+    },
+
+    "milestones":  { ".read": true, ".write": "auth != null && auth.token.admin === true" },
+    "enrollments": { ".read": true, ".write": "auth != null && auth.token.admin === true" },
+    "quotes":      { ".read": true, ".write": "auth != null && auth.token.admin === true" },
+    "seeded":      { ".read": true, ".write": "auth != null && auth.token.admin === true" },
+
+    "progress": {
+      "$mid": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && (auth.uid === $uid || auth.token.admin === true) && root.child('enrollments').child($mid).child($uid).exists()",
+          "$tid": {
+            "dots": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
+            "updatedAt":   { ".validate": "newData.isNumber()" },
+            "completedAt": { ".validate": "newData.isNumber() || !newData.exists()" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    },
+
+    "streaks": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        "$day": {
+          "minutes": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1440" },
+          "at": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
+
+    "chat": {
+      "$mid": {
+        ".read": "auth != null && (root.child('enrollments').child($mid).child(auth.uid).exists() || auth.token.admin === true)",
+        "$msg": {
+          ".write": "auth.token.admin === true || (!data.exists() && newData.child('uid').val() === auth.uid && root.child('enrollments').child($mid).child(auth.uid).child('canChat').val() === true)",
+          ".validate": "newData.hasChildren(['uid', 'name', 'text', 'at'])",
+          "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000" },
+          "at": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+
+    "notes": {
+      "$mid": {
+        ".read": "auth != null",
+        "$tid": {
+          "$nid": {
+            ".write": "auth.token.admin === true || (!data.exists() && newData.child('uid').val() === auth.uid)",
+            ".validate": "newData.hasChildren(['uid', 'by', 'text', 'at'])",
+            "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000" }
+          }
+        }
+      }
+    },
+
+    "$other": { ".read": false, ".write": false }
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#E9F1FD" />
+    <title>Vector Circle — NIT Silchar</title>
+    <meta name="description" content="Track the courses. Hold the streak. Climb the board. Milestone-based placement prep for NIT Silchar." />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <script>
+      // Runs before first paint, so the page never flashes the wrong theme.
+      // Duplicated from useTheme.js on purpose: it cannot wait for React.
+      (function () {
+        try {
+          var t = localStorage.getItem('vc.theme') ||
+                  (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var page = t === 'dark' ? '#101A2C' : '#E9F1FD';
+          document.documentElement.classList.toggle('dark', t === 'dark');
+          document.documentElement.style.background = page;
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', page);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
