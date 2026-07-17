@@ -75,10 +75,15 @@ export default function App() {
     return listen(`mustChange/${me.id}`, (v) => setMustChange(Boolean(v)));
   }, [me]);
 
+  // /progress is the only path that needs auth to read. The milestone is
+  // chosen on the Pick screen — before sign-in — so attaching on [mid] alone
+  // fired this while signed out. The read was denied, Firebase tore the
+  // listener down, and since mid never changed again the effect never re-ran.
+  // Writes kept succeeding into a view that could no longer see them.
   useEffect(() => {
-    if (!mid) return;
+    if (!mid || !me) { setProgress({}); return; }
     return listen(`progress/${mid}`, (v) => setProgress(v || {}));
-  }, [mid]);
+  }, [mid, me]);
 
   // An admin signs in without picking a milestone, so default them into the
   // first running one. Without this, Admin opens with nothing selected and

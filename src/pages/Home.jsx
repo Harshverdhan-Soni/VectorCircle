@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DotTrack from '../components/DotTrack';
 import {
   DOTS, setDots, pace, listen, streakLength, checkIn, todayKey,
-  objToArr, postNote
+  objToArr, postNote, isLocked
 } from '../lib/store';
 
 const TYPE_STYLE = {
@@ -53,6 +53,9 @@ export default function Home({ me, milestone, tasks, progress, rows }) {
             </p>
             <p className="eyebrow mt-2">
               {myRow?.filled || 0} of {tasks.length * DOTS} dots · rank #{myRow?.rank || '—'}
+            </p>
+            <p className="text-mist text-[11px] mt-1">
+              {tasks.filter((t) => !isLocked(t)).length} of {tasks.length} courses open
             </p>
           </div>
           {p && (
@@ -117,12 +120,14 @@ export default function Home({ me, milestone, tasks, progress, rows }) {
             <div className="flex-1 h-px bg-line" />
             <span className="font-mono text-[11px] text-mist">
               {list.filter((t) => (mine[t.id]?.dots || 0) >= DOTS).length}/{list.length} done
+              {list.every(isLocked) && <span className="text-amber ml-2">locked</span>}
             </span>
           </div>
           <div className="space-y-3">
             {list.map((t) => (
               <TaskCard
                 key={t.id} task={t} me={me} mid={milestone.id}
+                locked={isLocked(t)}
                 value={Math.min(mine[t.id]?.dots || 0, DOTS)}
               />
             ))}
@@ -133,14 +138,32 @@ export default function Home({ me, milestone, tasks, progress, rows }) {
   );
 }
 
-function TaskCard({ task, me, mid, value }) {
+function TaskCard({ task, me, mid, value, locked = false }) {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState([]);
   const [draft, setDraft] = useState('');
+  const [saveError, setSaveError] = useState('');
   const done = value >= DOTS;
 
+  // The dot track renders whatever the database says. So a rejected write is
+  // invisible — the dot just doesn't move, and the student assumes the app is
+  // broken. Say what happened instead.
+  const save = async (v) => {
+    setSaveError('');
+    try {
+      await setDots(mid, me.id, task.id, v);
+    } catch (e) {
+      console.error('[setDots]', task.id, e.code, e.message);
+      setSaveError(
+        e?.message?.includes('permission_denied') || e?.code === 'PERMISSION_DENIED'
+          ? 'Could not save — the database refused this. If the course was just unlocked, reload the page.'
+          : `Could not save: ${e.message}`
+      );
+    }
+  };
+
   useEffect(() => {
-    if (!open) return;
+    if (!open || locked) return;
     return listen(`notes/${mid}/${task.id}`, (v) =>
       setNotes(objToArr(v).sort((a, b) => b.at - a.at))
     );
@@ -153,12 +176,17 @@ function TaskCard({ task, me, mid, value }) {
   };
 
   return (
-    <article className={`card p-4 transition ${done ? 'border-mint/30' : ''}`}>
+    <article className={`card p-4 transition ${done ? 'border-mint/30' : ''} ${locked ? 'border-dashed' : ''}`}>
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className={`min-w-0 ${locked ? 'opacity-55' : ''}`}>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className={`chip ${TYPE_STYLE[task.type] || TYPE_STYLE.reference}`}>{task.type}</span>
             <span className="font-mono text-[10px] text-mist">{task.hours}h</span>
+            {locked && (
+              <span className="chip border-amber/50 text-amber bg-amber/10 flex items-center gap-1">
+                <LockIcon /> locked
+              </span>
+            )}
           </div>
           <h3 className="font-display font-semibold leading-snug">{task.title}</h3>
           <p className="text-mist text-xs mt-0.5">{task.provider}</p>
@@ -166,22 +194,38 @@ function TaskCard({ task, me, mid, value }) {
             <p className="text-mist/90 text-xs mt-2 leading-relaxed">{task.outcome}</p>
           )}
         </div>
-        <a
-          href={task.url} target="_blank" rel="noreferrer"
-          className="btn-ghost !px-3 !py-1.5 text-xs shrink-0"
-        >
-          Open ↗
-        </a>
+        {locked ? (
+          <span className="btn-ghost !px-3 !py-1.5 text-xs shrink-0 opacity-40 pointer-events-none"
+                aria-disabled="true">
+            Locked
+          </span>
+        ) : (
+          <a href={task.url} target="_blank" rel="noreferrer"
+             className="btn-ghost !px-3 !py-1.5 text-xs shrink-0">
+            Open ↗
+          </a>
+        )}
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
-        <DotTrack value={value} onChange={(v) => setDots(mid, me.id, task.id, v)} />
-        <button className="eyebrow hover:text-chalk transition" onClick={() => setOpen(!open)}>
-          {open ? 'Hide notes' : 'Notes'}
-        </button>
-      </div>
+      {locked ? (
+        // Deliberately still on screen: seeing the whole road is the point.
+        // It just isn't yours to walk yet.
+        <p className="mt-4 text-[11px] text-mist border-l-2 border-amber/40 pl-3 leading-relaxed">
+          Your admin opens this one when the circle gets here.
+        </p>
+      ) : (
+        <>
+          <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
+            <DotTrack value={value} onChange={save} />
+            <button className="eyebrow hover:text-chalk transition" onClick={() => setOpen(!open)}>
+              {open ? 'Hide notes' : 'Notes'}
+            </button>
+          </div>
+          {saveError && <p className="text-rose text-xs mt-2.5 leading-relaxed">{saveError}</p>}
+        </>
+      )}
 
-      {open && (
+      {open && !locked && (
         <div className="mt-4 pt-4 border-t border-line space-y-3">
           <div className="flex gap-2">
             <input
@@ -202,5 +246,16 @@ function TaskCard({ task, me, mid, value }) {
         </div>
       )}
     </article>
+  );
+}
+
+
+function LockIcon() {
+  return (
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="2.5" aria-hidden="true">
+      <rect x="4" y="10.5" width="16" height="11" rx="2.5" />
+      <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+    </svg>
   );
 }

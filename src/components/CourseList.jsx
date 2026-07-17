@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { reorderTasks } from '../lib/store';
+import { reorderTasks, setTaskLocked, setTasksLocked, isLocked } from '../lib/store';
 
 /**
  * Reorder the syllabus by dragging.
@@ -15,6 +15,7 @@ import { reorderTasks } from '../lib/store';
  * Those are the keyboard path too.
  */
 export default function CourseList({ mid, tasks, onEdit, onDelete }) {
+  const openCount = tasks.filter((t) => !isLocked(t)).length;
   const [list, setList] = useState(tasks);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -54,8 +55,27 @@ export default function CourseList({ mid, tasks, onEdit, onDelete }) {
 
   let lastWeek = null;
 
+  // Unlocking a whole week at a time is the move that actually gets used —
+  // Monday morning, open week 3, tell the circle.
+  const weekTasks = (w) => list.filter((t) => t.week === w);
+
   return (
     <div className="space-y-2">
+      <div className="card p-3 flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-xs text-mist">
+          <span className="text-chalk font-semibold">{openCount}</span> of {tasks.length} open to students
+        </p>
+        <div className="flex gap-2">
+          <button className="btn-ghost !py-1.5 !px-3 text-xs"
+                  onClick={() => confirm(`Unlock all ${tasks.length} courses for everyone?`) && setTasksLocked(mid, tasks, false)}>
+            Unlock all
+          </button>
+          <button className="btn-ghost !py-1.5 !px-3 text-xs"
+                  onClick={() => confirm('Lock every course? Students keep their dots — they just cannot add more.') && setTasksLocked(mid, tasks, true)}>
+            Lock all
+          </button>
+        </div>
+      </div>
       {dirty && (
         <div className="sticky top-16 z-20 card p-3 border-beam/50 flex items-center justify-between gap-3">
           <p className="text-xs text-mist">Sequence changed. Nothing is saved yet.</p>
@@ -79,6 +99,15 @@ export default function CourseList({ mid, tasks, onEdit, onDelete }) {
               <div className="flex items-center gap-3 pt-3 pb-1">
                 <span className="eyebrow">Week {t.week}</span>
                 <div className="flex-1 h-px bg-line" />
+                <button
+                  className="eyebrow hover:text-beam transition"
+                  onClick={() => {
+                    const wk = weekTasks(t.week);
+                    setTasksLocked(mid, wk, !wk.every((x) => !isLocked(x)));
+                  }}
+                >
+                  {weekTasks(t.week).every((x) => !isLocked(x)) ? 'lock week' : 'unlock week'}
+                </button>
               </div>
             )}
 
@@ -114,12 +143,24 @@ export default function CourseList({ mid, tasks, onEdit, onDelete }) {
 
               <span className="font-mono text-[11px] text-mist w-6 shrink-0 text-right">{i + 1}</span>
 
-              <div className="min-w-0 flex-1">
+              <div className={`min-w-0 flex-1 ${isLocked(t) ? 'opacity-55' : ''}`}>
                 <p className="font-semibold text-sm truncate">{t.title}</p>
                 <p className="text-mist text-[11px] truncate">
                   {t.provider} · {t.type} · {t.hours}h
                 </p>
               </div>
+
+              <button
+                onClick={() => setTaskLocked(mid, t.id, !isLocked(t))}
+                title={isLocked(t) ? 'Locked — students can see it but not start it' : 'Open to students'}
+                className={`chip !px-2 !py-1 shrink-0 transition ${
+                  isLocked(t)
+                    ? 'border-amber/50 text-amber bg-amber/10'
+                    : 'border-mint/50 text-mint bg-mint/10'
+                }`}
+              >
+                {isLocked(t) ? 'locked' : 'open'}
+              </button>
 
               <div className="flex flex-col shrink-0">
                 <button onClick={() => move(i, i - 1)} disabled={i === 0}

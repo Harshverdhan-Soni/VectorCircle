@@ -11,7 +11,7 @@ import CourseList from '../components/CourseList';
 
 const BLANK_TASK = {
   title: '', provider: '', url: '', type: 'course',
-  hours: 2, week: 1, stage: '', order: 99, outcome: ''
+  hours: 2, week: 1, stage: '', order: 99, outcome: '', locked: true
 };
 
 const SECTIONS = ['students', 'courses', 'milestone', 'quotes'];
@@ -307,6 +307,12 @@ function Courses({ mid, milestone, tasks }) {
           </div>
           <input className="field" placeholder="Stage label (e.g. Retrieval core)"
                  value={form.stage} onChange={(e) => setForm({ ...form, stage: e.target.value })} />
+          <label className="flex items-center gap-2.5 text-sm text-mist cursor-pointer">
+            <input type="checkbox" className="accent-beam h-4 w-4"
+                   checked={form.locked !== false}
+                   onChange={(e) => setForm({ ...form, locked: e.target.checked })} />
+            Locked — students see it, but cannot start it yet
+          </label>
           <div className="flex gap-2">
             <button className="btn-primary flex-1" onClick={save}>Save course</button>
             <button className="btn-ghost" onClick={() => setEditing(null)}>Cancel</button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DOTS } from '../lib/store';
+import { DOTS, isLocked } from '../lib/store';
 
 /**
  * The signature element: ten dots per task. Tap a dot to set progress to that
@@ -51,8 +51,11 @@ export function Fingerprint({ tasks, progress }) {
     <div className="flex gap-[3px] items-end h-6" aria-hidden="true">
       {tasks.map((t) => {
         const d = Math.min(progress?.[t.id]?.dots || 0, DOTS);
+        const locked = isLocked(t);
         return (
-          <div key={t.id} className="w-[5px] bg-line/60 rounded-sm h-6 flex flex-col justify-end overflow-hidden">
+          <div key={t.id}
+               className={`w-[5px] rounded-sm h-6 flex flex-col justify-end overflow-hidden
+                           ${locked ? 'bg-line/25' : 'bg-line/60'}`}>
             <div
               className={`w-full rounded-sm transition-all ${d >= DOTS ? 'bg-mint' : 'bg-beam'}`}
               style={{ height: `${(d / DOTS) * 100}%` }}

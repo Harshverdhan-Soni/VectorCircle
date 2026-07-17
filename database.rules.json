@@ -39,6 +39,7 @@
         "$uid": {
           ".write": "auth != null && (auth.uid === $uid || auth.token.admin === true) && root.child('enrollments').child($mid).child($uid).exists()",
           "$tid": {
+            ".validate": "auth.token.admin === true || root.child('milestones').child($mid).child('tasks').child($tid).child('locked').val() === false",
             "dots": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
             "updatedAt":   { ".validate": "newData.isNumber()" },
             "completedAt": { ".validate": "newData.isNumber() || !newData.exists()" },

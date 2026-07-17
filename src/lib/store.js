@@ -7,8 +7,21 @@ export const todayKey = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM
 
 /* ---------------------------------- subscriptions --------------------------- */
 
-export const listen = (path, cb) =>
-  onValue(ref(db, path), (snap) => cb(snap.val()));
+/**
+ * onValue's third argument is an error callback. Without it, a denied read
+ * fails silently: the callback simply never fires, the listener is torn down,
+ * and Firebase does not retry. The UI then shows empty data forever and looks
+ * like a write bug. Always log it.
+ */
+export const listen = (path, cb, onError) =>
+  onValue(
+    ref(db, path),
+    (snap) => cb(snap.val()),
+    (err) => {
+      console.error(`[listen] ${path} failed: ${err.code || err.message}`);
+      onError?.(err);
+    }
+  );
 
 export const objToArr = (obj) =>
   obj ? Object.entries(obj).map(([id, v]) => ({ id, ...v })) : [];
@@ -61,7 +74,26 @@ export const deleteMilestone = async (mid) => {
 
 /* ------------------------------------- tasks -------------------------------- */
 
-export const addTask = (mid, task) => push(ref(db, `milestones/${mid}/tasks`), task);
+/**
+ * Locked is the default, and absence means locked.
+ *
+ * `locked !== false` rather than `locked === true` on purpose: the 22 seeded
+ * courses were written before this field existed, so an undefined value has to
+ * mean locked. Otherwise the whole syllabus would spring open on deploy.
+ */
+export const isLocked = (t) => t?.locked !== false;
+
+export const setTaskLocked = (mid, tid, locked) =>
+  update(ref(db, `milestones/${mid}/tasks/${tid}`), { locked });
+
+export const setTasksLocked = (mid, tasks, locked) => {
+  const patch = {};
+  tasks.forEach((t) => { patch[`milestones/${mid}/tasks/${t.id}/locked`] = locked; });
+  return update(ref(db), patch);
+};
+
+export const addTask = (mid, task) =>
+  push(ref(db, `milestones/${mid}/tasks`), { locked: true, ...task });
 export const saveTask = (mid, tid, patch) => update(ref(db, `milestones/${mid}/tasks/${tid}`), patch);
 /**
  * Rewrite the whole sequence in one atomic update. Renumbering everything from
@@ -190,7 +222,10 @@ export async function seedIfEmpty() {
   QUOTES.forEach((q, i) => (quotes[`q${i}`] = q));
 
   const tasks = {};
-  RAG_TASKS.forEach((t, i) => (tasks[`t${String(i + 1).padStart(2, '0')}`] = t));
+  RAG_TASKS.forEach((t, i) => {
+    // Everything starts shut. The admin opens the syllabus at the pace they want.
+    tasks[`t${String(i + 1).padStart(2, '0')}`] = { ...t, locked: true };
+  });
 
   const materials = {};
   RAG_MATERIALS.forEach((m, i) => (materials[`m${String(i + 1).padStart(2, '0')}`] = m));
