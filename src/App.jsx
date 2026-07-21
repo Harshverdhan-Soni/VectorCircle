@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { listen, objToArr, seedIfEmpty, seedMilestoneIfMissing, rank, rosterOf } from './lib/store';
 import { watchAuth, signOut as authSignOut } from './lib/auth';
-import { APP_NAME, APP_TAGLINE, CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS } from './data/seed';
+import { APP_NAME, APP_TAGLINE, CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS, PLLM_MILESTONE, PLLM_TASKS, PLLM_MATERIALS } from './data/seed';
 import { Mark } from './components/Logo';
 import ThemeToggle from './components/ThemeToggle';
 import ChangePin from './components/ChangePin';
@@ -72,6 +72,7 @@ export default function App() {
     if (me?.role !== 'admin') return;
     seedIfEmpty().catch(() => {});
     seedMilestoneIfMissing(CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS).catch(() => {});
+    seedMilestoneIfMissing(PLLM_MILESTONE, PLLM_TASKS, PLLM_MATERIALS).catch(() => {});
   }, [me]);
 
   // Readable only by this uid or an admin, so it never advertises which

@@ -411,3 +411,293 @@ export const CLAUDE_MATERIALS = [
   { title: 'Model Context Protocol (MCP)', url: 'https://modelcontextprotocol.io/', type: 'reference', note: 'The open protocol behind tools and connectors. Reference for Week 4.' },
   { title: 'Vector Circle — add the circle’s own Claude links here', url: 'https://docs.claude.com/', type: 'reference', note: 'Admin: replace with resources the circle finds useful.' }
 ];
+
+// ---------------------------------------------------------------------------
+// MILESTONE: Production LLM Engineer in 28 weeks
+// A free-to-audit path that mirrors a paid 7-month "Production LLM Engineering:
+// RAG, Agents & Fine-Tuning" program. Twenty-eight steps, basic to advanced,
+// across the same three pillars — model internals & fine-tuning, advanced RAG,
+// and agentic systems — on an evaluation / LLMOps backbone.
+//
+// Mostly free short video courses (DeepLearning.AI short courses audit for
+// free; Hugging Face courses are free; one Karpathy deep-dive). Five checkpoints
+// stand in for the program's five capstone projects.
+//
+// Honest limits of a free path: the fine-tuning, distillation and serving steps
+// need a GPU — Google Colab / Kaggle free tiers carry the checkpoints. The
+// paid program's managed AWS deployment (SageMaker, Bedrock AgentCore) is taught
+// here as concepts plus the one free Bedrock course; reproducing it fully needs
+// an AWS account. URLs verified live July 2026; providers move course paths, so
+// admin should confirm each from Admin → Courses.
+// ---------------------------------------------------------------------------
+
+export const PLLM_MILESTONE = {
+  id: 'production-llm-engineer',
+  title: 'Production LLM Engineer',
+  subtitle: 'RAG, agents & fine-tuning — the free-course path',
+  description:
+    'Twenty-eight weeks, twenty-eight steps, basic to advanced. A free-to-audit route to the skills of a paid production LLM-engineering program: transformer internals, fine-tuning (LoRA/QLoRA/SFT/DPO/RLHF), quantization and serving, distillation, multimodal and speech, advanced and graph RAG, tool-using and multi-agent systems, and evaluation with eval-gated CI/CD. Mostly short video courses; five build checkpoints stand in for the program’s capstone projects. The fine-tuning steps need a free GPU (Colab or Kaggle).',
+  reward: 'First to fill all dots takes the Production LLM Engineer badge, a pinned spot on the board, and demos their capstone system to the circle.',
+  durationWeeks: 28,
+  startDate: '', // set by admin
+  endDate: '',
+  active: true,
+  createdAt: 0
+};
+
+export const PLLM_TASKS = [
+  // ---- Foundations: transformers & prompting (wk 1–4) ------------------------
+  {
+    order: 1, week: 1, stage: 'Foundations',
+    title: 'Prompt Engineering for Developers',
+    provider: 'DeepLearning.AI · OpenAI',
+    url: 'https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/',
+    hours: 3, type: 'course',
+    outcome: 'The base skill under every later step: instruction, context, few-shot, chain-of-thought, structured output. Free to audit.'
+  },
+  {
+    order: 2, week: 2, stage: 'Foundations',
+    title: 'How Transformer LLMs Work',
+    provider: 'DeepLearning.AI',
+    url: 'https://www.deeplearning.ai/courses/how-transformer-llms-work',
+    hours: 3, type: 'course',
+    outcome: 'Embeddings, attention, and encoder/decoder architectures without the maths overload. Covers the brochure’s Module 1. Free to audit.'
+  },
+  {
+    order: 3, week: 3, stage: 'Foundations',
+    title: 'Attention in Transformers: Concepts and Code in PyTorch',
+    provider: 'DeepLearning.AI',
+    url: 'https://www.deeplearning.ai/courses/attention-in-transformers-concepts-and-code-in-pytorch',
+    hours: 3, type: 'course',
+    outcome: 'Self, multi-head and masked attention, coded in PyTorch. The hands-on half of Module 2. Free to audit.'
+  },
+  {
+    order: 4, week: 4, stage: 'Foundations',
+    title: 'Neural Networks: Zero to Hero — build GPT from scratch',
+    provider: 'Andrej Karpathy (YouTube)',
+    url: 'https://karpathy.ai/zero-to-hero.html',
+    hours: 10, type: 'course',
+    outcome: 'The one heavy deep-dive: build a working GPT and tokenizer from nothing. Replaces Module 2/3 internals. Free, video, do it once and it sticks.'
+  },
+
+  // ---- Fine-tuning & alignment (wk 5–10) -------------------------------------
+  {
+    order: 5, week: 5, stage: 'Fine-tuning',
+    title: 'Pretraining LLMs',
+    provider: 'DeepLearning.AI · Upstage',
+    url: 'https://www.deeplearning.ai/courses/pretraining-llms',
+    hours: 3, type: 'course',
+    outcome: 'The pre-train vs post-train lifecycle, data curation, and depth upscaling. Covers Module 4. Free to audit.'
+  },
+  {
+    order: 6, week: 6, stage: 'Fine-tuning',
+    title: 'Finetuning Large Language Models',
+    provider: 'DeepLearning.AI · Lamini',
+    url: 'https://www.deeplearning.ai/short-courses/finetuning-large-language-models/',
+    hours: 2, type: 'course',
+    outcome: 'When to fine-tune vs prompt, data prep, and a first SFT run. The on-ramp to Modules 5–6. Free to audit.'
+  },
+  {
+    order: 7, week: 7, stage: 'Fine-tuning',
+    title: 'Hugging Face LLM Course — fine-tuning with Transformers & TRL',
+    provider: 'Hugging Face',
+    url: 'https://huggingface.co/learn/llm-course',
+    hours: 8, type: 'course',
+    outcome: 'Datasets, chat templates, loss masking, and LoRA/SFT with the TRL stack the brochure names. Free. Needs a free GPU (Colab/Kaggle).'
+  },
+  {
+    order: 8, week: 8, stage: 'Fine-tuning',
+    title: 'Post-training of LLMs — SFT, RLHF, DPO, PPO/GRPO, LoRA',
+    provider: 'DeepLearning.AI',
+    url: 'https://www.deeplearning.ai/courses/post-training-of-llms',
+    hours: 3, type: 'course',
+    outcome: 'The full post-training toolkit in one course, including DPO and PPO/GRPO. The spine of Module 6. Free to audit.'
+  },
+  {
+    order: 9, week: 9, stage: 'Fine-tuning',
+    title: 'Reinforcement Fine-Tuning LLMs with GRPO',
+    provider: 'DeepLearning.AI · Predibase',
+    url: 'https://www.deeplearning.ai/short-courses/reinforcement-fine-tuning-llms-grpo/',
+    hours: 2, type: 'course',
+    outcome: 'RL-only reasoning training (GRPO), the DeepSeek-R1 recipe from Module 9. Free to audit.'
+  },
+  {
+    order: 10, week: 10, stage: 'Fine-tuning',
+    title: 'Checkpoint: QLoRA SFT + DPO on a domain dataset',
+    provider: 'Self-directed (Colab/Kaggle GPU)',
+    url: 'https://github.com/',
+    hours: 12, type: 'project',
+    outcome: 'Stands in for Project 01 (MedScript). Run a two-stage QLoRA SFT then DPO on an open dataset, push both adapters to the Hub, and compare base vs SFT vs SFT+DPO. Dots = your own honest completion.'
+  },
+
+  // ---- Efficiency, serving & compression (wk 11–14) --------------------------
+  {
+    order: 11, week: 11, stage: 'Efficiency & serving',
+    title: 'Quantization in Depth',
+    provider: 'DeepLearning.AI · Hugging Face',
+    url: 'https://www.deeplearning.ai/courses/quantization-in-depth',
+    hours: 3, type: 'course',
+    outcome: 'Build a linear quantizer from scratch; symmetric/asymmetric, per-tensor/channel/group. Covers Module 7 quantization. Free to audit.'
+  },
+  {
+    order: 12, week: 12, stage: 'Efficiency & serving',
+    title: 'Efficiently Serving LLMs — KV cache, batching, multi-LoRA',
+    provider: 'DeepLearning.AI · Predibase',
+    url: 'https://www.deeplearning.ai/courses/efficiently-serving-llms',
+    hours: 3, type: 'course',
+    outcome: 'KV caching, continuous batching, and serving many LoRA adapters from one base — the inference stack of Modules 3 and 7. Free to audit.'
+  },
+  {
+    order: 13, week: 13, stage: 'Efficiency & serving',
+    title: 'Checkpoint: distil a model, quantize to GGUF, run on CPU',
+    provider: 'Self-directed (Colab/Kaggle GPU)',
+    url: 'https://github.com/',
+    hours: 10, type: 'project',
+    outcome: 'Stands in for Project 02 (EdgeReason) and Module 10. Distil a teacher into a smaller student with KL loss, convert to GGUF, and serve on CPU with llama.cpp. Benchmark quality vs speed.'
+  },
+  {
+    order: 14, week: 14, stage: 'Efficiency & serving',
+    title: 'Mixture of Experts & scaling laws',
+    provider: 'Hugging Face (guide) + Chinchilla paper',
+    url: 'https://huggingface.co/blog/moe',
+    hours: 2, type: 'reference',
+    outcome: 'Why sparse MoE scales and how Chinchilla sizes a model compute-optimally. Covers Module 8 and the scaling half of Module 3. No dedicated free video course exists; this is reading.'
+  },
+
+  // ---- Multimodal & speech (wk 15–16) ----------------------------------------
+  {
+    order: 15, week: 15, stage: 'Multimodal & speech',
+    title: 'Vision Transformers & VLMs — Hugging Face Computer Vision Course',
+    provider: 'Hugging Face',
+    url: 'https://huggingface.co/learn/computer-vision-course',
+    hours: 6, type: 'course',
+    outcome: 'ViT, CLIP/SigLIP/DINO, and how a projector wires vision into an LLM. Covers Modules 11–12. Free.'
+  },
+  {
+    order: 16, week: 16, stage: 'Multimodal & speech',
+    title: 'Fine-tune Whisper for speech-to-text — Hugging Face Audio Course',
+    provider: 'Hugging Face',
+    url: 'https://huggingface.co/learn/audio-course',
+    hours: 6, type: 'course',
+    outcome: 'Whisper architecture, STT pipelines, and fine-tuning on custom audio. Covers Module 13. Free.'
+  },
+
+  // ---- Retrieval & RAG (wk 17–21) --------------------------------------------
+  {
+    order: 17, week: 17, stage: 'RAG',
+    title: 'Embedding Models: from Architecture to Implementation',
+    provider: 'DeepLearning.AI · Vectara',
+    url: 'https://www.deeplearning.ai/short-courses/embedding-models-from-architecture-to-implementation/',
+    hours: 2, type: 'course',
+    outcome: 'How embeddings are built and chosen, and how to fine-tune them for retrieval. Covers Module 14. Free to audit.'
+  },
+  {
+    order: 18, week: 18, stage: 'RAG',
+    title: 'RAG foundations — LangChain: Chat with Your Data',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/',
+    hours: 2, type: 'course',
+    outcome: 'Loaders, chunking, vector stores, and a working baseline RAG app. Covers Modules 15–16. Free to audit.'
+  },
+  {
+    order: 19, week: 19, stage: 'RAG',
+    title: 'Advanced RAG — evaluation, query transforms & reranking',
+    provider: 'DeepLearning.AI · LlamaIndex · TruEra',
+    url: 'https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/',
+    hours: 3, type: 'course',
+    outcome: 'The RAG triad (context relevance, groundedness, answer relevance), rerankers, and query transforms — Module 17. Pair with Advanced Retrieval for AI with Chroma. Free to audit.'
+  },
+  {
+    order: 20, week: 20, stage: 'RAG',
+    title: 'Graph & multimodal RAG — Knowledge Graphs for RAG',
+    provider: 'DeepLearning.AI · Neo4j',
+    url: 'https://www.deeplearning.ai/short-courses/knowledge-graphs-rag/',
+    hours: 3, type: 'course',
+    outcome: 'Graph-structured retrieval with Neo4j; pair with Multimodal RAG: Chat with Videos for the ColPali-style visual path. Covers Module 18. Free to audit.'
+  },
+  {
+    order: 21, week: 21, stage: 'RAG',
+    title: 'Checkpoint: hybrid RAG with an eval gate and guardrails',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 12, type: 'project',
+    outcome: 'Stands in for Project 03 (LexisGraph). Build hybrid retrieval (dense + BM25 + reranker), add a RAGAS-style faithfulness gate, and mask PII / add input-output guardrails. See Quality and Safety for LLM Applications in Library.'
+  },
+
+  // ---- Agents (wk 22–25) -----------------------------------------------------
+  {
+    order: 22, week: 22, stage: 'Agents',
+    title: 'Function calling & tools — Functions, Tools and Agents with LangChain',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/',
+    hours: 3, type: 'course',
+    outcome: 'Structured output, tool/function calling, and the tool-executor loop. Covers Module 19’s Pydantic + function-calling half. Free to audit.'
+  },
+  {
+    order: 23, week: 23, stage: 'Agents',
+    title: 'MCP: Build Rich-Context AI Apps with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic',
+    url: 'https://www.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic',
+    hours: 3, type: 'course',
+    outcome: 'Build MCP servers and clients and connect them to an app — the tool-standardisation half of Module 19. Free to audit.'
+  },
+  {
+    order: 24, week: 24, stage: 'Agents',
+    title: 'AI Agents in LangGraph — stateful, HITL, multi-agent',
+    provider: 'DeepLearning.AI · LangChain · Tavily',
+    url: 'https://www.deeplearning.ai/courses/ai-agents-in-langgraph',
+    hours: 3, type: 'course',
+    outcome: 'Graph-based agents with state, persistence, human-in-the-loop, and multi-agent routing. Covers Module 20 and the context/memory of Module 23. Free to audit.'
+  },
+  {
+    order: 25, week: 25, stage: 'Agents',
+    title: 'Deploy agents — Serverless Agentic Workflows with Amazon Bedrock',
+    provider: 'DeepLearning.AI · AWS',
+    url: 'https://www.deeplearning.ai/short-courses/serverless-agentic-workflows-with-amazon-bedrock/',
+    hours: 3, type: 'course',
+    outcome: 'Tools, code execution, guardrails, and deploying an agent serverlessly on Bedrock. The free stand-in for Module 21’s AgentCore. Free to audit; a live deploy needs an AWS account.'
+  },
+
+  // ---- Evaluation, LLMOps & CI/CD (wk 26–27) ---------------------------------
+  {
+    order: 26, week: 26, stage: 'Eval & LLMOps',
+    title: 'Evaluating AI Agents',
+    provider: 'DeepLearning.AI · Arize AI',
+    url: 'https://www.deeplearning.ai/courses/evaluating-ai-agents',
+    hours: 3, type: 'course',
+    outcome: 'Tracing, agent-native evals, and LLM-as-judge with calibration. Covers the eval half of Module 24. Free to audit.'
+  },
+  {
+    order: 27, week: 27, stage: 'Eval & LLMOps',
+    title: 'LLMOps CI/CD — Automated Testing for LLMOps',
+    provider: 'DeepLearning.AI · CircleCI',
+    url: 'https://www.deeplearning.ai/short-courses/automated-testing-llmops',
+    hours: 3, type: 'course',
+    outcome: 'Rules-based and model-graded evals wired into a CI pipeline that gates on every change. Pair with the LLMOps course. Covers Module 24’s CI/CD and Project 05. Free to audit.'
+  },
+
+  // ---- Capstone (wk 28) ------------------------------------------------------
+  {
+    order: 28, week: 28, stage: 'Capstone',
+    title: 'Capstone: ship an eval-gated LLM system + case study',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 20, type: 'project',
+    outcome:
+      'Stands in for Projects 04 + 05. Ship one end-to-end system — a multi-agent app (LangGraph + MCP) or a fine-tuned-model RAG service — wrapped in an eval-gated CI pipeline with a public repo, a live demo, and a one-page case study: design, eval numbers, what broke, how you fixed it. This is the artifact that gets you hired.'
+  }
+];
+
+export const PLLM_MATERIALS = [
+  { title: 'Hugging Face LLM Course', url: 'https://huggingface.co/learn/llm-course', type: 'reference', note: 'The free spine for fine-tuning and the Transformers/TRL stack.' },
+  { title: 'Hugging Face TRL (SFT, DPO, GRPO)', url: 'https://huggingface.co/docs/trl', type: 'tool', note: 'The library the brochure’s fine-tuning modules are built on.' },
+  { title: 'Unsloth — consumer-GPU fine-tuning', url: 'https://github.com/unslothai/unsloth', type: 'tool', note: 'Makes QLoRA fit on a free Colab/Kaggle GPU. Use it for the Week 10 checkpoint.' },
+  { title: 'vLLM documentation', url: 'https://docs.vllm.ai/', type: 'reference', note: 'Production inference: KV cache, continuous batching, multi-LoRA serving.' },
+  { title: 'llama.cpp', url: 'https://github.com/ggerganov/llama.cpp', type: 'tool', note: 'GGUF conversion and CPU inference. For the Week 13 distillation checkpoint.' },
+  { title: 'Ragas — RAG evaluation toolkit', url: 'https://docs.ragas.io/', type: 'tool', note: 'Faithfulness, answer relevancy, context precision/recall. For the Week 21 gate.' },
+  { title: 'Promptfoo — prompt regression testing', url: 'https://www.promptfoo.dev/', type: 'tool', note: 'Golden snapshots and eval gating in CI, as in Module 24 / Project 05.' },
+  { title: 'Inspect AI — agent-native evals', url: 'https://inspect.aisi.org.uk/', type: 'tool', note: 'Task / Solver / Scorer harness for multi-step agent traces.' },
+  { title: 'Neo4j GraphAcademy (free)', url: 'https://graphacademy.neo4j.com/', type: 'reference', note: 'Free graph-database courses to back the Graph RAG step.' },
+  { title: 'Key papers: Attention, LoRA, QLoRA, DPO, Chinchilla', url: 'https://arxiv.org/abs/1706.03762', type: 'paper', note: 'Attention Is All You Need. Also read LoRA (2106.09685), QLoRA (2305.14314), DPO (2305.18290), Chinchilla (2203.15556).' },
+  { title: 'Vector Circle — add the circle’s own links here', url: 'https://www.deeplearning.ai/courses', type: 'reference', note: 'Admin: DeepLearning.AI’s full free short-course catalogue, plus your own picks.' }
+];
