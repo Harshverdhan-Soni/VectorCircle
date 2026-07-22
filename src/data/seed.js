@@ -701,3 +701,186 @@ export const PLLM_MATERIALS = [
   { title: 'Key papers: Attention, LoRA, QLoRA, DPO, Chinchilla', url: 'https://arxiv.org/abs/1706.03762', type: 'paper', note: 'Attention Is All You Need. Also read LoRA (2106.09685), QLoRA (2305.14314), DPO (2305.18290), Chinchilla (2203.15556).' },
   { title: 'Vector Circle — add the circle’s own links here', url: 'https://www.deeplearning.ai/courses', type: 'reference', note: 'Admin: DeepLearning.AI’s full free short-course catalogue, plus your own picks.' }
 ];
+
+// ---------------------------------------------------------------------------
+// MILESTONE: AI Engineer Course in 16 weeks
+// Built to the duties of a working Generative-AI / AI-Engineer role: design and
+// ship GenAI apps (chat, agents, workflows), RAG over vector stores, reusable
+// skills and guardrails, LLM fine-tuning and evaluation, and production MLOps /
+// CI-CD with API integration.
+//
+// Mostly free short video courses (DeepLearning.AI short courses audit for
+// free). Two build checkpoints turn the courses into a portfolio: a REST
+// microservice and a production capstone. The fine-tuning step needs a free GPU
+// (Colab/Kaggle). URLs verified live July 2026; providers move course paths, so
+// admin should confirm each from Admin → Courses.
+// ---------------------------------------------------------------------------
+
+export const AIENG_MILESTONE = {
+  id: 'ai-engineer',
+  title: 'AI Engineer Course',
+  subtitle: 'Build, ship and operate production GenAI systems',
+  description:
+    'Sixteen weeks, sixteen steps, mapped to the duties of a working AI / Generative-AI Engineer: build and deploy GenAI apps (chat, agents, automated workflows), RAG over vector stores (Pinecone, FAISS, Weaviate), reusable AI skills and guardrails, LLM fine-tuning and evaluation across GPT/LLaMA/Gemini families, and production pipelines with CI/CD, testing and monitoring — integrated through REST APIs. Mostly free-to-audit video courses, with two build checkpoints. The fine-tuning step needs a free GPU (Colab or Kaggle).',
+  reward: 'First to fill all dots takes the AI Engineer badge, a pinned spot on the board, and demos their production capstone to the circle.',
+  durationWeeks: 16,
+  startDate: '', // set by admin
+  endDate: '',
+  active: true,
+  createdAt: 0
+};
+
+export const AIENG_TASKS = [
+  // ---- Foundations & building GenAI apps (wk 1–5) ----------------------------
+  {
+    order: 1, week: 1, stage: 'Foundations',
+    title: 'Prompt Engineering for Developers',
+    provider: 'DeepLearning.AI · OpenAI',
+    url: 'https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/',
+    hours: 3, type: 'course',
+    outcome: 'Prompt strategies, reusable templates, and iterative refinement — the reliability skill behind every duty below. Free to audit.'
+  },
+  {
+    order: 2, week: 2, stage: 'Foundations',
+    title: 'Building Systems with the ChatGPT API',
+    provider: 'DeepLearning.AI · OpenAI',
+    url: 'https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/',
+    hours: 3, type: 'course',
+    outcome: 'Chain LLM calls into a multi-step system with classification, moderation and evaluation — your first real chat/workflow pipeline. Free to audit.'
+  },
+  {
+    order: 3, week: 3, stage: 'Foundations',
+    title: 'LangChain for LLM Application Development',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/',
+    hours: 3, type: 'course',
+    outcome: 'Chains, memory, prompt templates and output parsers — the reusable framework layer for standardising AI behaviour. Free to audit.'
+  },
+  {
+    order: 4, week: 4, stage: 'Foundations',
+    title: 'Building Generative AI Applications with Gradio',
+    provider: 'DeepLearning.AI · Hugging Face',
+    url: 'https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/',
+    hours: 2, type: 'course',
+    outcome: 'Wrap a model into a shareable app — chatbot, summariser, image tools — and demo it on Spaces. Design-and-ship in miniature. Free to audit.'
+  },
+  {
+    order: 5, week: 5, stage: 'Foundations',
+    title: 'Checkpoint: expose an LLM feature as a REST microservice',
+    provider: 'Self-directed (FastAPI)',
+    url: 'https://github.com/',
+    hours: 8, type: 'project',
+    outcome: 'The integration duty: wrap one LLM feature as a FastAPI microservice with typed request/response schemas, an API key, and error handling. Push to GitHub. Dots = your own honest completion.'
+  },
+
+  // ---- RAG over vector stores (wk 6–8) ---------------------------------------
+  {
+    order: 6, week: 6, stage: 'RAG & vector stores',
+    title: 'Building Applications with Vector Databases',
+    provider: 'DeepLearning.AI · Pinecone',
+    url: 'https://www.deeplearning.ai/courses/building-applications-vector-databases',
+    hours: 3, type: 'course',
+    outcome: 'Semantic search, RAG, hybrid search and recommenders on Pinecone; enough to reason about FAISS and Weaviate trade-offs too. Free to audit.'
+  },
+  {
+    order: 7, week: 7, stage: 'RAG & vector stores',
+    title: 'LangChain: Chat with Your Data',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/',
+    hours: 2, type: 'course',
+    outcome: 'End-to-end RAG: document loaders, chunking, embeddings, and retrieval with FAISS/Chroma. The core architecture you will maintain. Free to audit.'
+  },
+  {
+    order: 8, week: 8, stage: 'RAG & vector stores',
+    title: 'Building and Evaluating Advanced RAG',
+    provider: 'DeepLearning.AI · LlamaIndex · TruEra',
+    url: 'https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/',
+    hours: 3, type: 'course',
+    outcome: 'Rerankers, query transforms, and the RAG triad for measuring retrieval quality — production RAG, not a demo. Free to audit.'
+  },
+
+  // ---- Agents, skills & guardrails (wk 9–12) ---------------------------------
+  {
+    order: 9, week: 9, stage: 'Agents & guardrails',
+    title: 'Functions, Tools and Agents with LangChain',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/',
+    hours: 3, type: 'course',
+    outcome: 'Tool and function calling, structured output, and the tool-executor loop — the base of any AI agent. Free to audit.'
+  },
+  {
+    order: 10, week: 10, stage: 'Agents & guardrails',
+    title: 'AI Agents in LangGraph',
+    provider: 'DeepLearning.AI · LangChain · Tavily',
+    url: 'https://www.deeplearning.ai/courses/ai-agents-in-langgraph',
+    hours: 3, type: 'course',
+    outcome: 'Stateful, multi-step agent workflows with routing, persistence and human-in-the-loop — the automated-workflow duty. Free to audit.'
+  },
+  {
+    order: 11, week: 11, stage: 'Agents & guardrails',
+    title: 'Agent Skills with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic',
+    url: 'https://www.deeplearning.ai/courses/agent-skills-with-anthropic',
+    hours: 3, type: 'course',
+    outcome: 'Package reusable skills, system rules and workflow instructions that standardise AI behaviour across systems — exactly the "reusable AI skills" duty. Free to audit.'
+  },
+  {
+    order: 12, week: 12, stage: 'Agents & guardrails',
+    title: 'Quality and Safety for LLM Applications',
+    provider: 'DeepLearning.AI · WhyLabs',
+    url: 'https://www.deeplearning.ai/short-courses/quality-safety-llm-applications/',
+    hours: 2, type: 'course',
+    outcome: 'Guardrails, PII detection, hallucination checks and prompt-injection defence — the reliability and safety layer for client-facing AI. Free to audit.'
+  },
+
+  // ---- Fine-tuning & evaluation (wk 13–14) -----------------------------------
+  {
+    order: 13, week: 13, stage: 'Fine-tuning & eval',
+    title: 'Finetuning Large Language Models',
+    provider: 'DeepLearning.AI · Lamini',
+    url: 'https://www.deeplearning.ai/short-courses/finetuning-large-language-models/',
+    hours: 2, type: 'course',
+    outcome: 'When to fine-tune vs prompt or retrieve, data prep, and a real SFT run on an open model (LLaMA-family). Needs a free GPU. Free to audit.'
+  },
+  {
+    order: 14, week: 14, stage: 'Fine-tuning & eval',
+    title: 'Evaluating and Debugging Generative AI (Weights & Biases)',
+    provider: 'DeepLearning.AI · Weights & Biases',
+    url: 'https://www.deeplearning.ai/short-courses/evaluating-debugging-generative-ai/',
+    hours: 2, type: 'course',
+    outcome: 'Experiment tracking, evaluation, and dataset/model versioning — the internal tooling that accelerates experimentation and deployment. Free to audit.'
+  },
+
+  // ---- Production: MLOps & CI/CD (wk 15) -------------------------------------
+  {
+    order: 15, week: 15, stage: 'Production & MLOps',
+    title: 'LLMOps + Automated Testing for LLMOps',
+    provider: 'DeepLearning.AI · Google Cloud · CircleCI',
+    url: 'https://www.deeplearning.ai/short-courses/automated-testing-llmops',
+    hours: 4, type: 'course',
+    outcome: 'A production pipeline plus rules-based and model-graded evals wired into CI that gates every change — the software-engineering-best-practices duty. Pair the LLMOps and Automated Testing courses. Free to audit.'
+  },
+
+  // ---- Capstone (wk 16) ------------------------------------------------------
+  {
+    order: 16, week: 16, stage: 'Capstone',
+    title: 'Capstone: ship a production GenAI service + case study',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 20, type: 'project',
+    outcome:
+      'Bring it together: a RAG + tool-using agent with guardrails, served behind a REST API, with evals gating a CI pipeline and basic monitoring. Public repo, live demo, and a one-page case study: architecture, eval numbers, what broke, how you fixed it. This is the artifact that gets you the AI-engineer offer.'
+  }
+];
+
+export const AIENG_MATERIALS = [
+  { title: 'Google Gemini API / AI Studio (free tier)', url: 'https://ai.google.dev/', type: 'reference', note: 'Free Gemini access to cover the Gemini side of the "modern architectures" duty.' },
+  { title: 'Pinecone Learn', url: 'https://www.pinecone.io/learn/', type: 'reference', note: 'The best free written explainers on vector search.' },
+  { title: 'Weaviate docs', url: 'https://weaviate.io/developers/weaviate', type: 'reference', note: 'The second named vector store — hybrid search and modules.' },
+  { title: 'FAISS', url: 'https://github.com/facebookresearch/faiss', type: 'tool', note: 'The in-process vector index; the free default for local RAG.' },
+  { title: 'LangChain documentation', url: 'https://python.langchain.com/docs/introduction/', type: 'reference', note: 'Read the concept pages, not just the API.' },
+  { title: 'Guardrails AI', url: 'https://www.guardrailsai.com/', type: 'tool', note: 'Validators and structured guardrails for the safety duty.' },
+  { title: 'FastAPI', url: 'https://fastapi.tiangolo.com/', type: 'reference', note: 'For the Week 5 microservice checkpoint and the capstone API.' },
+  { title: 'Weights & Biases', url: 'https://wandb.ai/site', type: 'tool', note: 'Experiment tracking and evaluation dashboards.' },
+  { title: 'Vector Circle — add the circle’s own links here', url: 'https://www.deeplearning.ai/courses', type: 'reference', note: 'Admin: replace with the resources your circle finds useful.' }
+];

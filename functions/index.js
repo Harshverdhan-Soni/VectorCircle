@@ -148,3 +148,88 @@ exports.changePin = onCall({ region: 'asia-south1', cors: true }, async (req) =>
 
   return { ok: true };
 });
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+\d][\d\s-]{6,19}$/;
+
+/**
+ * A visitor asks to be enrolled in a course. There is no account and no auth
+ * here — a prospective student is, by definition, not signed in. So the write
+ * cannot go through the client: /applications is admin-only in the rules, and
+ * this function performs it with the Admin SDK. That keeps the "no public write
+ * path" posture intact while still letting strangers reach the admin.
+ *
+ * The admin reviews these in-app and approves or rejects; approval creates the
+ * account and enrolment. Nothing here grants access on its own.
+ */
+exports.applyForEnrollment = onCall({ region: 'asia-south1', cors: true }, async (req) => {
+  const mid = String(req.data?.mid || '').trim();
+  const name = String(req.data?.name || '').trim();
+  const email = String(req.data?.email || '').trim().toLowerCase();
+  const phone = String(req.data?.phone || '').trim();
+
+  // A signed-in student can ask for another course. The token carries the uid,
+  // so we can enrol the account they already have instead of making a new one.
+  const uid = req.auth?.uid || null;
+
+  if (!mid || !name || !email || !phone) {
+    throw new HttpsError('invalid-argument', 'Fill in your name, email and contact number.');
+  }
+  if (name.length > 80) throw new HttpsError('invalid-argument', 'That name is too long.');
+  if (email.length > 120 || !EMAIL_RE.test(email)) {
+    throw new HttpsError('invalid-argument', 'Enter a valid email address.');
+  }
+  if (!PHONE_RE.test(phone)) {
+    throw new HttpsError('invalid-argument', 'Enter a valid contact number.');
+  }
+
+  // The course has to exist and be open to applications.
+  const ms = (await db.ref(`milestones/${mid}`).get()).val();
+  if (!ms || ms.active === false) {
+    throw new HttpsError('not-found', 'That course is not open for applications.');
+  }
+
+  // A signed-in student who is already in this course has nothing to ask for.
+  if (uid) {
+    const already = (await db.ref(`enrollments/${mid}/${uid}`).get()).exists();
+    if (already) {
+      throw new HttpsError('already-exists', 'You are already enrolled in this course.');
+    }
+  }
+
+  // An open form is a spam magnet. Throttle per email: five in 24h, then pause.
+  const key = email.replace(/[.#$/\[\]]/g, '_');
+  const gateRef = db.ref(`_applyGate/${key}`);
+  const now = Date.now();
+  const raw = (await gateRef.get()).val() || { count: 0, since: now };
+  const gate = now - raw.since > 24 * 60 * 60 * 1000 ? { count: 0, since: now } : raw;
+  if (gate.count >= 5) {
+    throw new HttpsError('resource-exhausted', 'Too many requests from this email. Try again tomorrow.');
+  }
+
+  // One pending request per course, keyed on the account if signed in, else the
+  // email — don't let the list fill with dupes.
+  const all = (await db.ref('applications').get()).val() || {};
+  const dup = Object.values(all).some(
+    (a) => a && a.mid === mid && a.status === 'pending' &&
+      ((uid && a.uid === uid) || String(a.email || '').toLowerCase() === email)
+  );
+  if (dup) {
+    throw new HttpsError('already-exists', 'You have already applied to this course. The admin will be in touch.');
+  }
+
+  const record = {
+    mid,
+    name,
+    email,
+    phone,
+    course: ms.title || mid,   // denormalised so the admin list survives a rename
+    status: 'pending',
+    at: now
+  };
+  if (uid) record.uid = uid;   // an existing account to enrol, not a new one
+  await db.ref('applications').push(record);
+  await gateRef.set({ count: gate.count + 1, since: gate.since });
+
+  return { ok: true };
+});

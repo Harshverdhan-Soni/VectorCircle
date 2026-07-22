@@ -1,5 +1,6 @@
 import { ref, onValue, set, update, remove, push, get, serverTimestamp } from 'firebase/database';
-import { db } from './firebase';
+import { httpsCallable } from 'firebase/functions';
+import { db, fns } from './firebase';
 import { QUOTES, RAG_MILESTONE, RAG_TASKS, RAG_MATERIALS } from '../data/seed';
 
 export const DOTS = 10;
@@ -314,3 +315,51 @@ export const rosterOf = (members, enrollments) => {
 export const sendMessage = (mid, msg) => push(ref(db, `chat/${mid}`), { ...msg, at: Date.now() });
 export const deleteMessage = (mid, id) => remove(ref(db, `chat/${mid}/${id}`));
 export const clearChat = (mid) => remove(ref(db, `chat/${mid}`));
+
+/* --------------------------------- applications ----------------------------- */
+// applications/{appId} = { mid, name, email, phone, course, status, at }
+// A visitor is not signed in, so the write cannot come from the client —
+// /applications is admin-only in the rules. submitApplication goes through a
+// Cloud Function that writes with the Admin SDK; approve/reject are admin ops.
+
+// Prospective student → admin. No account, no auth; the server does the write.
+export const submitApplication = async (mid, { name, email, phone }) => {
+  const fn = httpsCallable(fns, 'applyForEnrollment');
+  await fn({ mid, name, email, phone });
+};
+
+// Approve = enrol into the milestone. Two cases:
+//  - an existing student (app.uid set): just add the enrolment, one atomic
+//    write, no new account and no PIN reset.
+//  - a new applicant: create the account with the shared default PIN, marked
+//    temporary so they must choose their own on first sign-in — the same
+//    contract as any admin-created account.
+export const approveApplication = async (appId, app) => {
+  if (app.uid) {
+    await update(ref(db), {
+      [`enrollments/${app.mid}/${app.uid}`]: { canChat: true, enrolledAt: Date.now() },
+      [`applications/${appId}/status`]: 'approved',
+      [`applications/${appId}/memberId`]: app.uid,
+      [`applications/${appId}/decidedAt`]: Date.now()
+    });
+    return app.uid;
+  }
+
+  const r = push(ref(db, 'members'));
+  const uid = r.key;
+  await set(r, { name: app.name, role: 'member', branch: '', joinedAt: Date.now() });
+  await update(ref(db), {
+    [`pins/${uid}`]: DEFAULT_PIN,
+    [`mustChange/${uid}`]: true,
+    [`enrollments/${app.mid}/${uid}`]: { canChat: true, enrolledAt: Date.now() },
+    [`applications/${appId}/status`]: 'approved',
+    [`applications/${appId}/memberId`]: uid,
+    [`applications/${appId}/decidedAt`]: Date.now()
+  });
+  return uid;
+};
+
+export const rejectApplication = (appId) =>
+  update(ref(db, `applications/${appId}`), { status: 'rejected', decidedAt: Date.now() });
+
+export const deleteApplication = (appId) => remove(ref(db, `applications/${appId}`));

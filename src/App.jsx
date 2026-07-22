@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { listen, objToArr, seedIfEmpty, seedMilestoneIfMissing, rank, rosterOf } from './lib/store';
 import { watchAuth, signOut as authSignOut } from './lib/auth';
-import { APP_NAME, APP_TAGLINE, CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS, PLLM_MILESTONE, PLLM_TASKS, PLLM_MATERIALS } from './data/seed';
+import { APP_NAME, APP_TAGLINE, CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS, PLLM_MILESTONE, PLLM_TASKS, PLLM_MATERIALS, AIENG_MILESTONE, AIENG_TASKS, AIENG_MATERIALS } from './data/seed';
 import { Mark } from './components/Logo';
 import ThemeToggle from './components/ThemeToggle';
 import ChangePin from './components/ChangePin';
+import ExploreCourses from './components/ExploreCourses';
 import Splash from './pages/Splash';
 import Pick from './pages/Pick';
 import Login from './pages/Login';
@@ -42,6 +43,8 @@ export default function App() {
   const [mustChange, setMustChange] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [applications, setApplications] = useState({});
+  const [exploreOpen, setExploreOpen] = useState(false);
 
   /* ---------------------------------- boot -------------------------------- */
   useEffect(() => {
@@ -73,6 +76,7 @@ export default function App() {
     seedIfEmpty().catch(() => {});
     seedMilestoneIfMissing(CLAUDE_MILESTONE, CLAUDE_TASKS, CLAUDE_MATERIALS).catch(() => {});
     seedMilestoneIfMissing(PLLM_MILESTONE, PLLM_TASKS, PLLM_MATERIALS).catch(() => {});
+    seedMilestoneIfMissing(AIENG_MILESTONE, AIENG_TASKS, AIENG_MATERIALS).catch(() => {});
   }, [me]);
 
   // Readable only by this uid or an admin, so it never advertises which
@@ -91,6 +95,14 @@ export default function App() {
     if (!mid || !me) { setProgress({}); return; }
     return listen(`progress/${mid}`, (v) => setProgress(v || {}));
   }, [mid, me]);
+
+  // Enrolment applications are admin-only to read (see the rules). Keyed on
+  // `me`, not just mounted once, so the listener attaches with the admin token
+  // rather than being denied while signed out and never retrying.
+  useEffect(() => {
+    if (me?.role !== 'admin') { setApplications({}); return; }
+    return listen('applications', (v) => setApplications(v || {}));
+  }, [me]);
 
   // An admin signs in without picking a milestone, so default them into the
   // first running one. Without this, Admin opens with nothing selected and
@@ -130,6 +142,11 @@ export default function App() {
     [members, enrollments, mid]
   );
   const admins = useMemo(() => members.filter((m) => m.role === 'admin'), [members]);
+  // Milestones this student is already in — so Explore can hide them.
+  const myEnrolledIds = useMemo(
+    () => new Set(milestones.filter((m) => enrollments?.[m.id]?.[me?.id]).map((m) => m.id)),
+    [milestones, enrollments, me]
+  );
   // Only enrolled students appear on the board. Admins run it, they don't race in it.
   const rows = useMemo(() => rank(roster, tasks, progress), [roster, tasks, progress]);
   const isAdmin = me?.role === 'admin';
@@ -228,6 +245,14 @@ export default function App() {
                     <p className="px-3 py-2 text-xs text-mist truncate border-b border-line mb-1">
                       {me.name}
                     </p>
+                    {!isAdmin && (
+                      <button
+                        className="w-full text-left px-3 py-2 text-sm rounded-xl hover:bg-beam/10 transition"
+                        onClick={() => { setMenuOpen(false); setExploreOpen(true); }}
+                      >
+                        Explore courses
+                      </button>
+                    )}
                     <button
                       className="w-full text-left px-3 py-2 text-sm rounded-xl hover:bg-beam/10 transition"
                       onClick={() => { setMenuOpen(false); setPinOpen(true); }}
@@ -270,6 +295,7 @@ export default function App() {
           <Admin
             milestones={milestones} milestone={milestone} mid={mid} setMid={setMid}
             tasks={tasks} members={members} quotes={quotes} roster={roster}
+            applications={applications}
           />
         )}
       </main>
@@ -292,6 +318,15 @@ export default function App() {
           ))}
         </div>
       </nav>
+
+      {exploreOpen && !isAdmin && (
+        <ExploreCourses
+          milestones={milestones}
+          enrolledIds={myEnrolledIds}
+          meName={me.name}
+          onClose={() => setExploreOpen(false)}
+        />
+      )}
     </div>
   );
 }

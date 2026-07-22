@@ -3,7 +3,8 @@ import {
   saveMilestone, createMilestone, deleteMilestone,
   addTask, saveTask, deleteTask,
   addMember, updateMember, removeMember, setPin, resetPinToDefault, DEFAULT_PIN,
-  enroll, unenroll, setChatRight, clearChat, listen
+  enroll, unenroll, setChatRight, clearChat, listen, objToArr,
+  approveApplication, rejectApplication, deleteApplication
 } from '../lib/store';
 import { ref, push, remove } from 'firebase/database';
 import { db } from '../lib/firebase';
@@ -14,10 +15,11 @@ const BLANK_TASK = {
   hours: 2, week: 1, stage: '', order: 99, outcome: '', locked: true
 };
 
-const SECTIONS = ['students', 'courses', 'milestone', 'quotes'];
+const SECTIONS = ['students', 'applications', 'courses', 'milestone', 'quotes'];
 
-export default function Admin({ milestones, milestone, mid, setMid, tasks, members, quotes, roster }) {
+export default function Admin({ milestones, milestone, mid, setMid, tasks, members, quotes, roster, applications }) {
   const [section, setSection] = useState('students');
+  const pending = objToArr(applications).filter((a) => a.status === 'pending').length;
 
   return (
     <div className="space-y-6">
@@ -52,6 +54,12 @@ export default function Admin({ milestones, milestone, mid, setMid, tasks, membe
             }`}
           >
             {s}
+            {s === 'applications' && pending > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full
+                               bg-amber/20 text-amber text-[10px] font-mono align-middle">
+                {pending}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -59,6 +67,7 @@ export default function Admin({ milestones, milestone, mid, setMid, tasks, membe
       {section === 'students' && (
         <Students mid={mid} milestone={milestone} members={members} roster={roster} />
       )}
+      {section === 'applications' && <Applications applications={applications} milestones={milestones} />}
       {section === 'courses' && <Courses mid={mid} milestone={milestone} tasks={tasks} />}
       {section === 'milestone' && <MilestoneForm milestone={milestone} setMid={setMid} />}
       {section === 'quotes' && <Quotes quotes={quotes} />}
@@ -235,6 +244,167 @@ function Students({ mid, milestone, members, roster }) {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ------------------------------- applications ------------------------------ */
+/* Requests from visitors who are not enrolled. Approving creates the account
+   and enrols them; the PIN is the shared default, marked temporary. */
+
+function Applications({ applications, milestones }) {
+  const apps = objToArr(applications).sort((a, b) => (b.at || 0) - (a.at || 0));
+  const pending = apps.filter((a) => a.status === 'pending');
+  const decided = apps.filter((a) => a.status !== 'pending');
+
+  const titleFor = (a) => a.course || milestones.find((m) => m.id === a.mid)?.title || a.mid;
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="eyebrow mb-2.5">{pending.length} awaiting review</p>
+        <div className="space-y-2">
+          {pending.map((a) => (
+            <PendingCard key={a.id} a={a} title={titleFor(a)} />
+          ))}
+          {!pending.length && (
+            <p className="text-mist text-sm card p-4">
+              No requests waiting. When a visitor applies from the landing screen, they show up here.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {decided.length > 0 && (
+        <div>
+          <p className="eyebrow mb-2.5">{decided.length} decided</p>
+          <div className="space-y-2">
+            {decided.map((a) => (
+              <DecidedRow key={a.id} a={a} title={titleFor(a)} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Inline confirm, not a browser dialog — and each action is async with a busy
+   and error state, so a failed write (a network blip) is visible and retryable
+   instead of silently doing nothing while you click again. */
+function PendingCard({ a, title }) {
+  const [mode, setMode] = useState(null); // null | 'approve' | 'reject'
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const existing = Boolean(a.uid);
+  const when = a.at ? new Date(a.at).toLocaleDateString() : '';
+
+  const run = async (fn) => {
+    setBusy(true); setErr('');
+    try {
+      await fn();                       // on success the card leaves the pending list
+    } catch {
+      setErr('Could not save — likely a network hiccup. Try again.');
+      setBusy(false);
+    }
+  };
+
+  const confirmMsg = mode === 'reject'
+    ? `Reject ${a.name}'s request?`
+    : existing
+      ? `Enrol ${a.name} in “${title}”? They already have an account, so no new PIN is created.`
+      : `Create ${a.name}'s account with temporary PIN ${DEFAULT_PIN} and enrol them in “${title}”. Share the name and PIN — they set their own on first sign-in.`;
+
+  return (
+    <div className="card p-4 space-y-3 border-amber/25">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-semibold text-sm">
+            {a.name}
+            {existing && (
+              <span className="ml-2 chip !px-2 !py-0.5 border-beam/40 text-beam bg-beam/10 align-middle">
+                has account
+              </span>
+            )}
+          </p>
+          <p className="eyebrow mt-0.5">{title}</p>
+        </div>
+        <span className="text-mist text-[11px] font-mono shrink-0">{when}</span>
+      </div>
+      <div className="text-[13px] text-mist space-y-0.5">
+        <p><a href={`mailto:${a.email}`} className="text-beam hover:underline break-all">{a.email}</a></p>
+        <p><a href={`tel:${a.phone}`} className="text-beam hover:underline">{a.phone}</a></p>
+      </div>
+
+      {mode ? (
+        <div className="space-y-2 pt-1">
+          <p className="text-mist text-xs leading-relaxed">{confirmMsg}</p>
+          <div className="flex gap-2">
+            <button
+              className={`${mode === 'approve' ? 'btn-primary' : 'btn-danger'} flex-1 !py-2`}
+              disabled={busy}
+              onClick={() => run(() =>
+                mode === 'approve' ? approveApplication(a.id, a) : rejectApplication(a.id)
+              )}
+            >
+              {busy ? 'Saving…' : mode === 'approve' ? 'Confirm — approve & enrol' : 'Confirm reject'}
+            </button>
+            <button className="btn-ghost !py-2" disabled={busy}
+                    onClick={() => { setMode(null); setErr(''); }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex gap-2 pt-1">
+          <button className="btn-primary flex-1 !py-2" onClick={() => setMode('approve')}>
+            Approve &amp; enrol
+          </button>
+          <button className="btn-ghost !py-2" onClick={() => setMode('reject')}>Reject</button>
+        </div>
+      )}
+      {err && <p className="text-rose text-xs">{err}</p>}
+    </div>
+  );
+}
+
+function DecidedRow({ a, title }) {
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const remove = async () => {
+    setBusy(true);
+    try { await deleteApplication(a.id); } catch { setBusy(false); setConfirming(false); }
+  };
+
+  return (
+    <div className="card p-3.5 flex items-center gap-3">
+      <div className="min-w-0 flex-1">
+        <p className="font-semibold text-sm truncate">{a.name}</p>
+        <p className="text-mist text-[11px] truncate">{title} · {a.email}</p>
+      </div>
+      <span className={`chip !px-2.5 !py-1 shrink-0 ${
+        a.status === 'approved'
+          ? 'border-mint/50 text-mint bg-mint/10'
+          : 'border-rose/50 text-rose bg-rose/10'
+      }`}>
+        {a.status}
+      </span>
+      {confirming ? (
+        <>
+          <button className="btn-danger !px-2.5 !py-1 text-xs" disabled={busy} onClick={remove}>
+            {busy ? '…' : 'Confirm'}
+          </button>
+          <button className="btn-ghost !px-2.5 !py-1 text-xs" disabled={busy}
+                  onClick={() => setConfirming(false)}>
+            Cancel
+          </button>
+        </>
+      ) : (
+        <button className="btn-ghost !px-2.5 !py-1 text-xs" onClick={() => setConfirming(true)}>
+          Remove
+        </button>
+      )}
     </div>
   );
 }

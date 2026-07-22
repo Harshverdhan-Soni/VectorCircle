@@ -19,6 +19,12 @@
     },
 
     "_loginGate": { ".read": false, ".write": false },
+    "_applyGate": { ".read": false, ".write": false },
+
+    "applications": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
 
     "mustChange": {
       "$uid": {
