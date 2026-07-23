@@ -27,6 +27,10 @@
   --mint:     18 122  78;   /*  4.71:1 */
   --amber:   138  83   0;   /*  5.57:1 */
   --rose:    179  40  60;   /*  5.62:1 */
+  /* Sign-in button, drawn from the mark: teal at rest, green on hover. */
+  --signin:        10  96 112;   /* #0A6070 — the mark's teal (grad-a)  */
+  --signin-hover:  21  99  62;   /* #15633E — the mark's green (grad-b)  */
+  --onsignin:     255 255 255;   /* white label on the dark teal/green  */
 
   /* The mark keeps its own colours — it is not part of the UI palette.
      Deep teal/sage here so it holds up on white cards. */
@@ -54,6 +58,10 @@
   --mint:     74 222 128;   /*  9.99:1 */
   --amber:   245 181  74;   /*  9.61:1 */
   --rose:    255 138 150;   /*  7.73:1 */
+  /* The mark's night colours: bright cyan → sage. Dark label on the light fill. */
+  --signin:        88 193 216;   /* #58C1D8 — grad-a  */
+  --signin-hover: 126 217 165;   /* #7ED9A5 — grad-b  */
+  --onsignin:      16  26  44;   /* night ink on the bright fill  */
 
   --grad-a: #58C1D8;
   --grad-b: #7ED9A5;
@@ -98,6 +106,19 @@
   /* Bhanzu's secondary: white pill, blue hairline, blue label. */
   .btn-ghost   { @apply btn bg-panel border border-beam/45 text-beam hover:bg-beam/[.06] hover:border-beam; }
   .btn-danger  { @apply btn bg-panel border border-rose/40 text-rose hover:bg-rose/[.07]; }
+  /* The "way in", in the mark's own colours: teal at rest, fading to green
+     on hover. Slow transition so the shift reads as a fade, not a flip. */
+  .btn-signin {
+    @apply btn font-bold;
+    background-color: rgb(var(--signin));
+    color: rgb(var(--onsignin));
+    box-shadow: 0 6px 18px -8px rgb(var(--signin) / .5);
+    transition: background-color .45s ease, box-shadow .45s ease, transform .15s ease;
+  }
+  .btn-signin:hover {
+    background-color: rgb(var(--signin-hover));
+    box-shadow: 0 6px 18px -8px rgb(var(--signin-hover) / .55);
+  }
 
   .field {
     @apply w-full bg-field border border-line rounded-2xl px-4 py-2.5 text-sm text-chalk

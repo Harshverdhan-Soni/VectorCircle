@@ -884,3 +884,186 @@ export const AIENG_MATERIALS = [
   { title: 'Weights & Biases', url: 'https://wandb.ai/site', type: 'tool', note: 'Experiment tracking and evaluation dashboards.' },
   { title: 'Vector Circle — add the circle’s own links here', url: 'https://www.deeplearning.ai/courses', type: 'reference', note: 'Admin: replace with the resources your circle finds useful.' }
 ];
+
+// ---------------------------------------------------------------------------
+// MILESTONE: Forward-Deployed AI Engineer in 16 weeks
+// A builder path for the forward-deployed engineer who ships AI agents and
+// document intelligence end to end, oriented to regulated domains like mortgage
+// lending. Four build areas from the role: agents & autonomous workflows,
+// document & data intelligence, evaluation & quality, and deployment.
+//
+// Heavier on checkpoints than the other tracks — this role is judged on shipped
+// systems, not demos. Mostly free short video courses (DeepLearning.AI audit
+// for free). No free course teaches mortgage data or FCRA/GLBA specifically, so
+// the checkpoints use mock loan files and the materials cover PII tooling; the
+// regulatory judgement is applied in the capstone. Fine-tuning needs a free GPU.
+// URLs verified live July 2026; admin should confirm each from Admin → Courses.
+// ---------------------------------------------------------------------------
+
+export const FDE_MILESTONE = {
+  id: 'forward-deployed-ai-engineer',
+  title: 'Forward-Deployed AI Engineer',
+  subtitle: 'Ship AI agents and document intelligence end to end',
+  description:
+    'Sixteen weeks, sixteen steps, built to a forward-deployed AI-engineer role: own the arc from business problem to production AI system. Four build areas — multi-step agents with tool use, memory and human-in-the-loop; document and data intelligence (extraction, RAG over complex files, correction feedback loops); evaluation and quality against ground truth; and deployment with monitoring. Oriented to regulated domains like mortgage lending. Mostly free-to-audit video courses, with four hands-on checkpoints that build a portfolio. The fine-tuning step needs a free GPU (Colab or Kaggle).',
+  reward: 'First to fill all dots takes the Forward-Deployed Engineer badge, a pinned spot on the board, and demos their production capstone to the circle.',
+  durationWeeks: 16,
+  startDate: '', // set by admin
+  endDate: '',
+  active: true,
+  createdAt: 0
+};
+
+export const FDE_TASKS = [
+  // ---- Agents & autonomous workflows (wk 1–6) --------------------------------
+  {
+    order: 1, week: 1, stage: 'Agents & workflows',
+    title: 'Prompt Engineering for Developers',
+    provider: 'DeepLearning.AI · OpenAI',
+    url: 'https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/',
+    hours: 3, type: 'course',
+    outcome: 'Reliable, testable prompts and structured output — the primitive under every agent and extractor you will build. Free to audit.'
+  },
+  {
+    order: 2, week: 2, stage: 'Agents & workflows',
+    title: 'Building Systems with the ChatGPT API',
+    provider: 'DeepLearning.AI · OpenAI',
+    url: 'https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/',
+    hours: 3, type: 'course',
+    outcome: 'Chain LLM calls into a multi-step system with classification, moderation and evaluation. Thinking in systems, not one-shot prompts. Free to audit.'
+  },
+  {
+    order: 3, week: 3, stage: 'Agents & workflows',
+    title: 'Functions, Tools and Agents with LangChain',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/',
+    hours: 3, type: 'course',
+    outcome: 'Tool and function calling, structured output, and the tool-executor loop — the mechanics of an agent that can act. Free to audit.'
+  },
+  {
+    order: 4, week: 4, stage: 'Agents & workflows',
+    title: 'AI Agents in LangGraph',
+    provider: 'DeepLearning.AI · LangChain · Tavily',
+    url: 'https://www.deeplearning.ai/courses/ai-agents-in-langgraph',
+    hours: 3, type: 'course',
+    outcome: 'Stateful multi-step agents with memory, routing and human-in-the-loop checkpoints — exactly the agentic workflows the role builds. Free to audit.'
+  },
+  {
+    order: 5, week: 5, stage: 'Agents & workflows',
+    title: 'MCP: Build Rich-Context AI Apps with Anthropic',
+    provider: 'DeepLearning.AI · Anthropic',
+    url: 'https://www.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic',
+    hours: 3, type: 'course',
+    outcome: 'Standardise how agents reach internal systems, external data and third-party APIs — the "close the loop between insight and action" duty. Free to audit.'
+  },
+  {
+    order: 6, week: 6, stage: 'Agents & workflows',
+    title: 'Checkpoint: ship a tool-using workflow agent with HITL',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 10, type: 'project',
+    outcome: 'Build a multi-step agent over a mock loan file that navigates conditions, flags exceptions and surfaces recommendations, with tool use, memory and a human-approval checkpoint before any write. Push to GitHub. Dots = your own honest completion.'
+  },
+
+  // ---- Document & data intelligence (wk 7–10) --------------------------------
+  {
+    order: 7, week: 7, stage: 'Document intelligence',
+    title: 'Preprocessing Unstructured Data for LLM Applications',
+    provider: 'DeepLearning.AI · Unstructured',
+    url: 'https://www.deeplearning.ai/short-courses/preprocessing-unstructured-data-for-llm-applications/',
+    hours: 2, type: 'course',
+    outcome: 'Turn PDFs, tables and images into machine-readable data — income docs, appraisals, title. The extraction layer of a document-intensive process. Free to audit.'
+  },
+  {
+    order: 8, week: 8, stage: 'Document intelligence',
+    title: 'LangChain: Chat with Your Data',
+    provider: 'DeepLearning.AI · LangChain',
+    url: 'https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/',
+    hours: 2, type: 'course',
+    outcome: 'Retrieval over complex files so underwriters and borrowers can query a loan file in natural language. The core RAG architecture. Free to audit.'
+  },
+  {
+    order: 9, week: 9, stage: 'Document intelligence',
+    title: 'Building and Evaluating Advanced RAG',
+    provider: 'DeepLearning.AI · LlamaIndex · TruEra',
+    url: 'https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/',
+    hours: 3, type: 'course',
+    outcome: 'Rerankers, query transforms and the RAG triad for measuring retrieval quality — production retrieval you can defend. Free to audit.'
+  },
+  {
+    order: 10, week: 10, stage: 'Document intelligence',
+    title: 'Checkpoint: extraction + RAG with a correction feedback loop',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 10, type: 'project',
+    outcome: 'Extract structured fields from a set of documents, make them queryable, and capture reviewer corrections into a store that improves accuracy over time — the data-flywheel duty. Report accuracy before and after.'
+  },
+
+  // ---- Evaluation & quality (wk 11–13) ---------------------------------------
+  {
+    order: 11, week: 11, stage: 'Evaluation & quality',
+    title: 'Evaluating AI Agents',
+    provider: 'DeepLearning.AI · Arize AI',
+    url: 'https://www.deeplearning.ai/courses/evaluating-ai-agents',
+    hours: 3, type: 'course',
+    outcome: 'Trace agents, score outputs against ground truth, and run LLM-as-judge with calibration — measuring whether the AI actually works, not just runs. Free to audit.'
+  },
+  {
+    order: 12, week: 12, stage: 'Evaluation & quality',
+    title: 'Quality and Safety for LLM Applications',
+    provider: 'DeepLearning.AI · WhyLabs',
+    url: 'https://www.deeplearning.ai/short-courses/quality-safety-llm-applications/',
+    hours: 2, type: 'course',
+    outcome: 'Guardrails, PII detection, hallucination and prompt-injection defence — the reliability layer a regulated, PII-heavy domain demands. Free to audit.'
+  },
+  {
+    order: 13, week: 13, stage: 'Evaluation & quality',
+    title: 'Automated Testing for LLMOps',
+    provider: 'DeepLearning.AI · CircleCI',
+    url: 'https://www.deeplearning.ai/short-courses/automated-testing-llmops',
+    hours: 3, type: 'course',
+    outcome: 'Prompt regression and model-graded evals wired into CI that gates every change — catch failure modes before production. Free to audit.'
+  },
+
+  // ---- Deployment & model adaptation (wk 14–15) ------------------------------
+  {
+    order: 14, week: 14, stage: 'Deploy & operate',
+    title: 'Serverless Agentic Workflows with Amazon Bedrock',
+    provider: 'DeepLearning.AI · AWS',
+    url: 'https://www.deeplearning.ai/short-courses/serverless-agentic-workflows-with-amazon-bedrock/',
+    hours: 3, type: 'course',
+    outcome: 'Deploy an agent with tools, code execution and guardrails serverlessly on AWS — the containerise-and-operate preference. Free to audit; a live deploy needs an AWS account.'
+  },
+  {
+    order: 15, week: 15, stage: 'Deploy & operate',
+    title: 'Finetuning Large Language Models',
+    provider: 'DeepLearning.AI · Lamini',
+    url: 'https://www.deeplearning.ai/short-courses/finetuning-large-language-models/',
+    hours: 2, type: 'course',
+    outcome: 'When to adapt a model vs prompt or retrieve, and a real fine-tune run — the nice-to-have domain-adaptation skill. Needs a free GPU. Free to audit.'
+  },
+
+  // ---- Capstone (wk 16) ------------------------------------------------------
+  {
+    order: 16, week: 16, stage: 'Capstone',
+    title: 'Capstone: an end-to-end mortgage AI system + case study',
+    provider: 'Self-directed',
+    url: 'https://github.com/',
+    hours: 24, type: 'project',
+    outcome:
+      'Own the full arc: document extraction feeding a RAG + tool-using agent with human-in-the-loop, guardrails and PII masking, served behind a REST API, deployed in a container, with evals gating CI and basic production monitoring. Public repo, live demo, and a one-page case study covering design, eval numbers against ground truth, failure modes, and how you handle PII / regulatory constraints. This is the artifact that proves you can ship.'
+  }
+];
+
+export const FDE_MATERIALS = [
+  { title: 'LangGraph documentation', url: 'https://langchain-ai.github.io/langgraph/', type: 'reference', note: 'Stateful agents, checkpoints and human-in-the-loop — the agent backbone.' },
+  { title: 'Unstructured — document extraction', url: 'https://unstructured.io/', type: 'tool', note: 'Parse PDFs, images and tables into structured data. Free open-source core.' },
+  { title: 'LlamaParse', url: 'https://github.com/run-llama/llama_parse', type: 'tool', note: 'Strong document parsing for the extraction checkpoint.' },
+  { title: 'Microsoft Presidio — PII detection & masking', url: 'https://github.com/microsoft/presidio', type: 'tool', note: 'For the FCRA/GLBA-style PII handling the role calls out.' },
+  { title: 'FastAPI', url: 'https://fastapi.tiangolo.com/', type: 'reference', note: 'Async REST APIs and microservices — the integration and serving layer.' },
+  { title: 'Streamlit — lightweight UIs', url: 'https://streamlit.io/', type: 'tool', note: 'For the full-stack preference: a quick internal tool or reviewer UI.' },
+  { title: 'n8n — workflow automation', url: 'https://n8n.io/', type: 'tool', note: 'The nice-to-have automation tool named in the role.' },
+  { title: 'Ragas — RAG evaluation', url: 'https://docs.ragas.io/', type: 'tool', note: 'Faithfulness and retrieval metrics for the document checkpoints.' },
+  { title: 'AWS Free Tier', url: 'https://aws.amazon.com/free/', type: 'reference', note: 'For the deployment step and capstone. Watch the limits.' },
+  { title: 'Vector Circle — add the circle’s own links here', url: 'https://www.deeplearning.ai/courses', type: 'reference', note: 'Admin: replace with mortgage/regulated-domain resources your circle finds useful.' }
+];

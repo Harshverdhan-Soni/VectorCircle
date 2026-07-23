@@ -99,7 +99,7 @@ export default function Login({ mode, milestone, roster, admins, onSignedIn, onB
           />
 
           {error && <p className="text-rose text-xs mb-4">{error}</p>}
-          <button className="btn-primary w-full" onClick={submit} disabled={busy}>
+          <button className="btn-signin w-full" onClick={submit} disabled={busy}>
             {busy ? 'Checking…' : 'Sign in'}
           </button>
         </div>

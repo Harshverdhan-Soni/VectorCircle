@@ -56,7 +56,7 @@ export default function Pick({ milestones, enrollments, onPick, onAdmin }) {
                   <button className="btn-primary flex-1 !py-2" onClick={() => setPreview(m)}>
                     View &amp; apply
                   </button>
-                  <button className="btn-ghost !py-2" onClick={() => onPick(m.id)}>
+                  <button className="btn-signin !py-2" onClick={() => onPick(m.id)}>
                     Sign in
                   </button>
                 </div>
